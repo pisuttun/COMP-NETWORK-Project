@@ -1,21 +1,31 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { io } from 'socket.io-client'
+import { Message } from './types'
 
-const socket = io('http://localhost:8000', { transports: ['websocket'] })
+const socket = io('http://localhost:8000', { transports: ['websocket'], reconnection: false })
 
 export default function Home() {
   const [text, setText] = useState('')
   const [id, setId] = useState('')
-  const [message, setMessage] = useState<string[]>([])
+  const [message, setMessage] = useState<Message[]>([])
+
+  useEffect(() => {
+    socket.emit('login')
+  }, [])
+
   const handlepost = () => {
-    socket.emit('send message', { post: text })
+    const body: Message = {
+      message: text,
+      sender: id,
+    }
+    socket.emit('send message', body)
   }
 
   socket.on('your id', (data) => {
     setId(data)
   })
-  socket.on('message', (data) => {
-    setMessage([...message, data.post])
+  socket.on('message', (data: Message) => {
+    setMessage([...message, data])
   })
   return (
     <div>
@@ -24,7 +34,9 @@ export default function Home() {
       <p>id: {id}</p>
       <p>message:</p>
       {message.map((p, index) => (
-        <li key={index}>{p}</li>
+        <li key={index}>
+          {p.message} from: {p.sender}
+        </li>
       ))}
     </div>
   )
