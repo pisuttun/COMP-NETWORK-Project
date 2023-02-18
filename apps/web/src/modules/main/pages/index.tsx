@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { io } from 'socket.io-client'
+import { useSocket } from 'common/context/socketContext'
 import { Message } from './types'
-
-const URL = process.env.NEXT_PUBLIC_DROPLET_URL || 'http://localhost:8000'
-const socket = io(URL, { transports: ['websocket'], reconnection: false })
 
 export default function Home() {
   const [text, setText] = useState('')
   const [id, setId] = useState('')
   const [message, setMessage] = useState<Message[]>([])
+  const { socket } = useSocket()
 
   useEffect(() => {
     socket.emit('login')
