@@ -42,6 +42,13 @@ io.on('connection', (socket: Socket) => {
     console.log('receive: ', body)
     io.emit('message', body)
   })
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected: ', socket.id)
+    users.splice(users.indexOf(socket.id), 1)
+    console.log('current users: ', users)
+  })
 })
+
 const port = 8000
 server.listen(port, () => console.log(`Listening on port:${port}...`))
