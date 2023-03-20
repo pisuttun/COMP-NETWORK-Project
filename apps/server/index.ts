@@ -5,6 +5,7 @@ import { Server, Socket } from 'socket.io'
 import fs from 'fs'
 import cors from 'cors'
 import dotenv from 'dotenv'
+import clientPromise from './clientPromise'
 const SocketIO = require('socket.io')
 
 var io: Server
@@ -50,5 +51,16 @@ io.on('connection', (socket: Socket) => {
   })
 })
 
-const port = 8000
+//TODO: delete this later
+const test = async () => {
+  const client = await clientPromise
+  const collection = client.db('chat').collection('users')
+
+  await collection.insertOne({ name: 'test', time: new Date() })
+  const result = await collection.find().toArray()
+
+  console.log(result)
+}
+
+const port = process.env.port || 8000
 server.listen(port, () => console.log(`Listening on port:${port}...`))
