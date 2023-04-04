@@ -12,6 +12,9 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
+  "dependencies": {
+    "@dtos": "workspace:*"
+  },
   "devDependencies": {
     "eslint-config-custom": "workspace:*",
     "prettier": "latest",
@@ -20,6 +23,5 @@
   "engines": {
     "node": ">=14.0.0"
   },
-  "dependencies": {},
   "packageManager": "pnpm@7.11.0"
 }

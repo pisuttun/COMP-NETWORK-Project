@@ -4,9 +4,12 @@ importers:
 
   .:
     specifiers:
+      '@dtos': workspace:*
       eslint-config-custom: workspace:*
       prettier: latest
       turbo: latest
+    dependencies:
+      '@dtos': link:packages/dtos
     devDependencies:
       eslint-config-custom: link:packages/eslint-config-custom
       prettier: 2.8.6
@@ -14,6 +17,7 @@ importers:
 
   apps/server:
     specifiers:
+      '@dtos': workspace:*
       '@types/cors': ^2.8.13
       '@types/express': ^4.17.17
       '@types/node': ^17.0.12
@@ -26,6 +30,7 @@ importers:
       ts-node: ^10.9.1
       typescript: ^4.9.5
     dependencies:
+      '@dtos': link:../../packages/dtos
       cors: 2.8.5
       dotenv: 16.0.3
       express: 4.18.2
@@ -42,6 +47,7 @@ importers:
   apps/web:
     specifiers:
       '@babel/core': ^7.0.0
+      '@dtos': workspace:*
       '@emotion/react': ^11.10.6
       '@emotion/styled': ^11.10.6
       '@mui/material': ^5.11.14
@@ -57,6 +63,7 @@ importers:
       tsconfig: workspace:*
       typescript: ^4.5.3
     dependencies:
+      '@dtos': link:../../packages/dtos
       '@emotion/react': 11.10.6_pmekkgnqduwlme35zpnqhenc34
       '@emotion/styled': 11.10.6_oouaibmszuch5k64ms7uxp2aia
       '@mui/material': 5.11.14_xqeqsl5kvjjtyxwyi3jhw3yuli
@@ -74,6 +81,12 @@ importers:
       tsconfig: link:../../packages/tsconfig
       typescript: 4.9.5
 
+  packages/dtos:
+    specifiers:
+      typescript: ^4.5.3
+    dependencies:
+      typescript: 4.9.5
+
   packages/eslint-config-custom:
     specifiers:
       eslint: ^7.23.0
@@ -86,7 +99,7 @@ importers:
       eslint: 7.32.0
       eslint-config-next: 13.0.0_jofidmxrjzhj7l6vknpw5ecvfe
       eslint-config-prettier: 8.6.0_eslint@7.32.0
-      eslint-config-turbo: 0.0.7_eslint@7.32.0
+      eslint-config-turbo: 1.8.8_eslint@7.32.0
       eslint-plugin-react: 7.31.8_eslint@7.32.0
     devDependencies:
       typescript: 4.9.5
@@ -1694,13 +1707,13 @@ packages:
       eslint: 7.32.0
     dev: false
 
-  /eslint-config-turbo/0.0.7_eslint@7.32.0:
-    resolution: {integrity: sha512-WbrGlyfs94rOXrhombi1wjIAYGdV2iosgJRndOZtmDQeq5GLTzYmBUCJQZWtLBEBUPCj96RxZ2OL7Cn+xv/Azg==}
+  /eslint-config-turbo/1.8.8_eslint@7.32.0:
+    resolution: {integrity: sha512-+yT22sHOT5iC1sbBXfLIdXfbZuiv9bAyOXsxTxFCWelTeFFnANqmuKB3x274CFvf7WRuZ/vYP/VMjzU9xnFnxA==}
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
       eslint: 7.32.0
-      eslint-plugin-turbo: 0.0.7_eslint@7.32.0
+      eslint-plugin-turbo: 1.8.8_eslint@7.32.0
     dev: false
 
   /eslint-import-resolver-node/0.3.7:
@@ -1851,8 +1864,8 @@ packages:
       string.prototype.matchall: 4.0.8
     dev: false
 
-  /eslint-plugin-turbo/0.0.7_eslint@7.32.0:
-    resolution: {integrity: sha512-iajOH8eD4jha3duztGVBD1BEmvNrQBaA/y3HFHf91vMDRYRwH7BpHSDFtxydDpk5ghlhRxG299SFxz7D6z4MBQ==}
+  /eslint-plugin-turbo/1.8.8_eslint@7.32.0:
+    resolution: {integrity: sha512-zqyTIvveOY4YU5jviDWw9GXHd4RiKmfEgwsjBrV/a965w0PpDwJgEUoSMB/C/dU310Sv9mF3DSdEjxjJLaw6rA==}
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
