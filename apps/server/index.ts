@@ -11,6 +11,7 @@ import { Types } from 'mongoose'
 import connectDatabase from './database/dbConnect'
 import clientModel from './database/model/client'
 import { ClientStatus } from './database/schema/interface'
+import { handleDisconnect, handleLogin } from './database/controller/auth'
 const SocketIO = require('socket.io')
 
 var io: Server
@@ -44,24 +45,27 @@ if (process.env.NODE_ENV === 'production') {
 const users: string[] = []
 io.on('connection', (socket: Socket) => {
   console.log('new socket connection: ', socket.id)
+  //verify the token
+  socket.on('verify token', (body: any) => {
+    const token = body.token
+    console.log('verify token', token)
+    //TODO: verify token
+    //verify()
+    const isSuccess = true
+    io.to(socket.id).emit('verify status', { isSuccess })
+  })
 
+  //auth routes
   socket.on('login', () => {
-    let id = socket.id
-    console.log('new user connected')
-    io.to(id).emit('your id', socket.id)
-    users.push(id)
-    console.log('current users: ', users)
+    handleLogin(io, socket)
+  })
+  socket.on('disconnect', () => {
+    handleDisconnect(io, socket)
   })
 
   socket.on('send message', (body: any) => {
     console.log('receive: ', body)
     io.emit('message', body)
-  })
-
-  socket.on('disconnect', () => {
-    console.log('user disconnected: ', socket.id)
-    users.splice(users.indexOf(socket.id), 1)
-    console.log('current users: ', users)
   })
 })
 
