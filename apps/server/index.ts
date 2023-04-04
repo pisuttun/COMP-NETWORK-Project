@@ -30,8 +30,8 @@ try {
 console.log(process.env.NODE_ENV)
 if (process.env.NODE_ENV === 'production') {
   const options = {
-    key: fs.readFileSync('/etc/ssl/private/apache-selfsigned.key'),
-    cert: fs.readFileSync('/etc/ssl/certs/apache-selfsigned.crt'),
+    key: fs.readFileSync(process.env.HTTPS_SERVER_KEY_PATH || ''),
+    cert: fs.readFileSync(process.env.HTTPS_SERVER_CERT_PATH || ''),
   }
   server = https.createServer(options, app)
   io = SocketIO(server, {
