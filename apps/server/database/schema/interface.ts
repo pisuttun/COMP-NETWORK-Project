@@ -1,30 +1,32 @@
+import { Schema } from 'mongoose'
+
 export enum ClientStatus {
   AVAILABLE = 'AVAILABLE',
   OFFLINE = 'OFFLINE',
 }
 
 export interface IClient {
-  id: number
+  _id: Schema.Types.ObjectId
   username: string
   password: string
   nickname: string
   socketId: string
-  groupId: number[]
+  groupId: Schema.Types.ObjectId[]
   status: ClientStatus
   isInvisibility: boolean
 }
 
 export interface IGroup {
-  id: number
+  _id: Schema.Types.ObjectId
   groupName: string
-  clientId: number[]
+  clientId: Schema.Types.ObjectId[]
 }
 
 export interface IChatData {
-  id: number
+  _id: Schema.Types.ObjectId
   text: string
   createdAt: Date
-  senderId: number
-  receiverId: number
-  groupId: number
+  senderId: Schema.Types.ObjectId
+  receiverId: Schema.Types.ObjectId
+  groupId: Schema.Types.ObjectId
 }

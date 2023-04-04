@@ -3,12 +3,6 @@ import { IClient, ClientStatus } from '../schema/interface'
 
 const clientSchema = new Schema<IClient>(
   {
-    //TODO: change id to auto increment
-    id: {
-      type: Number,
-      required: true,
-      unique: true,
-    },
     username: {
       type: String,
       required: true,
@@ -26,7 +20,7 @@ const clientSchema = new Schema<IClient>(
       type: String,
     },
     groupId: {
-      type: [Number],
+      type: [Schema.Types.ObjectId],
       default: [],
     },
     status: {
@@ -45,4 +39,4 @@ const clientSchema = new Schema<IClient>(
   },
 )
 
-export default model<IClient>('Client', clientSchema)
+export default model<IClient>('clients', clientSchema)

@@ -10,6 +10,8 @@ import dotenv from 'dotenv'
 import { Types } from 'mongoose'
 import connectDatabase from './database/dbConnect'
 import clientModel from './database/model/client'
+import chatDataModel from './database/model/chatData'
+import groupModel from './database/model/group'
 import { ClientStatus } from './database/schema/interface'
 import { handleDisconnect, handleLogin } from './database/controller/auth'
 const SocketIO = require('socket.io')
@@ -69,17 +71,18 @@ io.on('connection', (socket: Socket) => {
   })
 })
 
-const test = async () => {
-  console.log('test model and connection')
-  const randomNumberId = Math.floor(Math.random() * 1000000)
+// TODO: move this to a test file
+/*
+const testClient = async () => {
+  console.log('test client model and connection')
+
+  const randomNumber = Math.floor(Math.random() * 10000000000)
   const newClient = new clientModel({
-    //todo: change id to auto increment
-    id: randomNumberId,
-    username: 'test username' + randomNumberId,
+    username: 'test username' + randomNumber,
     password: 'test password',
     nickname: 'test nickname',
-    socketId: '123abc',
-    groupId: [1, 2, 3],
+    socketId: randomNumber,
+    groupId: [new Types.ObjectId(), new Types.ObjectId(), new Types.ObjectId()],
     status: ClientStatus.AVAILABLE,
     isInvisibility: false,
   })
@@ -89,12 +92,45 @@ const test = async () => {
 
   console.log('saved find result : ', result)
 }
-/*
+
+const testChatData = async () => {
+  console.log('test chatData model and connection')
+
+  const newChatData = new chatDataModel({
+    text: 'test text',
+    senderId: new Types.ObjectId(),
+    receiverId: new Types.ObjectId(),
+    groupId: new Types.ObjectId(),
+  })
+
+  await newChatData.save()
+  const result = await chatDataModel.find().exec()
+
+  console.log('saved find result : ', result)
+}
+
+const testGroup = async () => {
+  console.log('test group model and connection')
+
+  const newGroup = new groupModel({
+    groupName: 'test group name ',
+    clientId: [new Types.ObjectId(), new Types.ObjectId(), new Types.ObjectId()],
+  })
+
+  await newGroup.save()
+  const result = await groupModel.find().exec()
+
+  console.log('saved find result : ', result)
+}
+
 try {
-  test()
+  testClient()
+  testChatData()
+  testGroup()
 } catch (error) {
   console.log('error: ', error)
 }
 */
+
 const port = process.env.port || 8000
 server.listen(port, () => console.log(`Listening on port:${port}...`))
