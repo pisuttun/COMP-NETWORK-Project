@@ -1,0 +1,27 @@
+name: Deploy backend app
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/server/**'
+      - 'packages/**'
+
+jobs:
+  deploy-backend:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing remote ssh commands
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.KEY }}
+          script: |
+            cd COMP-NETWORK-Project/
+            git pull
+            pnpm install
+            pm2 restart server
