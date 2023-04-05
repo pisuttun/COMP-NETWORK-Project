@@ -1,3 +1,4 @@
+/* eslint-disable turbo/no-undeclared-env-vars */
 import express from 'express'
 import https from 'https'
 import http from 'http'
@@ -5,7 +6,14 @@ import { Server, Socket } from 'socket.io'
 import fs from 'fs'
 import cors from 'cors'
 import dotenv from 'dotenv'
-import clientPromise from './clientPromise'
+
+import { Types } from 'mongoose'
+import connectDatabase from './database/dbConnect'
+import clientModel from './database/model/client'
+import chatDataModel from './database/model/chatData'
+import groupModel from './database/model/group'
+import { ClientStatus } from './database/schema/interface'
+import { handleDisconnect, handleLogin } from './database/controller/auth'
 const SocketIO = require('socket.io')
 
 var io: Server
@@ -14,11 +22,18 @@ dotenv.config()
 const app = express()
 app.use(cors())
 
+//connect to database
+try {
+  connectDatabase()
+} catch (error) {
+  console.log('error connecting to database: ', error)
+}
+
 console.log(process.env.NODE_ENV)
 if (process.env.NODE_ENV === 'production') {
   const options = {
-    key: fs.readFileSync('/etc/ssl/private/apache-selfsigned.key'),
-    cert: fs.readFileSync('/etc/ssl/certs/apache-selfsigned.crt'),
+    key: fs.readFileSync(process.env.HTTPS_SERVER_KEY_PATH || ''),
+    cert: fs.readFileSync(process.env.HTTPS_SERVER_CERT_PATH || ''),
   }
   server = https.createServer(options, app)
   io = SocketIO(server, {
@@ -31,36 +46,91 @@ if (process.env.NODE_ENV === 'production') {
 
 const users: string[] = []
 io.on('connection', (socket: Socket) => {
+  console.log('new socket connection: ', socket.id)
+  //verify the token
+  socket.on('verify token', (body: any) => {
+    const token = body.token
+    console.log('verify token', token)
+    //TODO: verify token
+    //verify()
+    const isSuccess = true
+    io.to(socket.id).emit('verify status', { isSuccess })
+  })
+
+  //auth routes
   socket.on('login', () => {
-    let id = socket.id
-    console.log('new user connected')
-    io.to(id).emit('your id', socket.id)
-    users.push(id)
-    console.log('current users: ', users)
+    handleLogin(io, socket)
+  })
+  socket.on('disconnect', () => {
+    handleDisconnect(io, socket)
   })
 
   socket.on('send message', (body: any) => {
     console.log('receive: ', body)
     io.emit('message', body)
   })
-
-  socket.on('disconnect', () => {
-    console.log('user disconnected: ', socket.id)
-    users.splice(users.indexOf(socket.id), 1)
-    console.log('current users: ', users)
-  })
 })
 
-//TODO: delete this later
-const test = async () => {
-  const client = await clientPromise
-  const collection = client.db('chat').collection('users')
+// TODO: move this to a test file
+/*
+const testClient = async () => {
+  console.log('test client model and connection')
 
-  await collection.insertOne({ name: 'test', time: new Date() })
-  const result = await collection.find().toArray()
+  const randomNumber = Math.floor(Math.random() * 10000000000)
+  const newClient = new clientModel({
+    username: 'test username' + randomNumber,
+    password: 'test password',
+    nickname: 'test nickname',
+    socketId: randomNumber,
+    groupId: [new Types.ObjectId(), new Types.ObjectId(), new Types.ObjectId()],
+    status: ClientStatus.AVAILABLE,
+    isInvisibility: false,
+  })
 
-  console.log(result)
+  await newClient.save()
+  const result = await clientModel.find().exec()
+
+  console.log('saved find result : ', result)
 }
+
+const testChatData = async () => {
+  console.log('test chatData model and connection')
+
+  const newChatData = new chatDataModel({
+    text: 'test text',
+    senderId: new Types.ObjectId(),
+    receiverId: new Types.ObjectId(),
+    groupId: new Types.ObjectId(),
+  })
+
+  await newChatData.save()
+  const result = await chatDataModel.find().exec()
+
+  console.log('saved find result : ', result)
+}
+
+const testGroup = async () => {
+  console.log('test group model and connection')
+
+  const newGroup = new groupModel({
+    groupName: 'test group name ',
+    clientId: [new Types.ObjectId(), new Types.ObjectId(), new Types.ObjectId()],
+  })
+
+  await newGroup.save()
+  const result = await groupModel.find().exec()
+
+  console.log('saved find result : ', result)
+}
+
+try {
+  testClient()
+  testChatData()
+  testGroup()
+} catch (error) {
+  console.log('error: ', error)
+}
+*/
 
 const port = process.env.port || 8000
 server.listen(port, () => console.log(`Listening on port:${port}...`))
