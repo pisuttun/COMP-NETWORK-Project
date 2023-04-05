@@ -11,9 +11,11 @@ export const SocketProvider = ({ children }: React.PropsWithChildren<{}>) => {
   const socket = io(URL, { transports: ['websocket'], reconnection: false })
 
   socket.on('connect', () => {
-    socket.emit('verify token', {
-      token: localStorage.getItem('token') || '',
-    })
+    if (typeof window !== 'undefined') {
+      socket.emit('verify token', {
+        token: localStorage.getItem('token') || '',
+      })
+    }
     socket.on('verify status', (data: { isSuccess: boolean }) => {
       console.log(data)
       //TODO: redirect to login page if isSuccess is false
