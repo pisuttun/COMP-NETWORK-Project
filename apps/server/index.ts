@@ -13,7 +13,7 @@ import clientModel from './database/model/client'
 import chatDataModel from './database/model/chatData'
 import groupModel from './database/model/group'
 import { ClientStatus } from './database/schema/interface'
-import { handleDisconnect, handleLogin } from './database/controller/auth'
+import { handleDisconnect, handleLogin } from './controllers/auth'
 const SocketIO = require('socket.io')
 
 var io: Server
