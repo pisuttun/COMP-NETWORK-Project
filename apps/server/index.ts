@@ -13,7 +13,7 @@ import clientModel from './database/model/client'
 import chatDataModel from './database/model/chatData'
 import groupModel from './database/model/group'
 import { ClientStatus } from './database/schema/interface'
-import { handleDisconnect, handleLogin } from './controllers/auth'
+import { handleDisconnect, handleLogin, handleRegister } from './controllers/auth'
 const SocketIO = require('socket.io')
 
 var io: Server
@@ -58,6 +58,12 @@ io.on('connection', (socket: Socket) => {
   })
 
   //auth routes
+  socket.on('register', (body: any) => {
+    console.log('register: ', body)
+    handleRegister(io, socket, body).catch((error) => {
+      console.log('error in register: ', error)
+    })
+  })
   socket.on('login', () => {
     handleLogin(io, socket)
   })
