@@ -1,14 +1,11 @@
 import React from 'react'
 import Typography from '@mui/material/Typography'
-import ChatName from './components/ChatName'
-import ListGroup from './components/ListGroup'
 import { RootContainer } from './styled'
 
-export default function Topbar() {
+export default function ListGroup() {
   return (
     <RootContainer>
-      <ListGroup />
-      <ChatName />
+      <Typography sx={{ color: 'white' }}>Group</Typography>
     </RootContainer>
   )
 }

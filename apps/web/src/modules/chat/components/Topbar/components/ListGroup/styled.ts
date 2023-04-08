@@ -4,9 +4,8 @@ export const RootContainer = styled('div')`
   display: flex;
   justify-content: left;
   flex-direction: row;
-  background-color: #412846;
-  width: 100%;
+  background-color: #322036;
   height: 7vh;
+  width: 16vw;
   border-bottom: 1px solid black;
-  border-left: 1px solid black;
 `
