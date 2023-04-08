@@ -60,12 +60,10 @@ io.on('connection', (socket: Socket) => {
   //auth routes
   socket.on('register', (body: any) => {
     console.log('register: ', body)
-    handleRegister(io, socket, body).catch((error) => {
-      console.log('error in register: ', error)
-    })
+    handleRegister(io, socket, body)
   })
-  socket.on('login', () => {
-    handleLogin(io, socket)
+  socket.on('login', (body: any) => {
+    handleLogin(io, socket, body)
   })
   socket.on('disconnect', () => {
     handleDisconnect(io, socket)
