@@ -13,7 +13,15 @@ import clientModel from './database/model/client'
 import chatDataModel from './database/model/chatData'
 import groupModel from './database/model/group'
 import { ClientStatus } from './database/schema/interface'
-import { handleDisconnect, handleLogin } from './database/controller/auth'
+import {
+  handleDisconnect,
+  handleLogin,
+  handleRegister,
+  handleVerify,
+  handleLogout,
+} from './controllers/auth'
+import { handleGetAllClient } from './controllers/profile'
+import { protectedRoute } from './middleware/auth'
 const SocketIO = require('socket.io')
 
 var io: Server
@@ -50,21 +58,43 @@ io.on('connection', (socket: Socket) => {
   //verify the token
   socket.on('verify token', (body: any) => {
     const token = body.token
-    console.log('verify token', token)
-    //TODO: verify token
-    //verify()
-    const isSuccess = true
-    io.to(socket.id).emit('verify status', { isSuccess })
+    handleVerify(io, socket, token)
   })
 
   //auth routes
-  socket.on('login', () => {
-    handleLogin(io, socket)
+  socket.on('register', (body: any) => {
+    handleRegister(io, socket, body)
+  })
+  socket.on('login', (body: any) => {
+    handleLogin(io, socket, body)
   })
   socket.on('disconnect', () => {
+    // disconnect is socket.io disconnect event
     handleDisconnect(io, socket)
   })
-
+  socket.on('logout', async (body: any) => {
+    // logout is custom user client logout event (token)
+    const token = body.token
+    protectedRoute(io, socket, token)
+      .then((result) => {
+        console.log('before logout result: ', result)
+        handleLogout(io, socket, result.userId)
+      })
+      .catch((error) => {
+        console.log('error: ', error)
+      })
+  })
+  socket.on('get all client', async (body: any) => {
+    const token = body.token
+    protectedRoute(io, socket, token)
+      .then(() => {
+        handleGetAllClient(io, socket)
+      })
+      .catch((error) => {
+        console.log('error: ', error)
+      })
+  })
+  //chat routes
   socket.on('send message', (body: any) => {
     console.log('receive: ', body)
     io.emit('message', body)

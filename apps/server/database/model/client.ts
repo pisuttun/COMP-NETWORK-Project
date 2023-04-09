@@ -1,5 +1,8 @@
+/* eslint-disable turbo/no-undeclared-env-vars */
 import { model, Schema } from 'mongoose'
 import { IClient, ClientStatus } from '../schema/interface'
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
 const clientSchema = new Schema<IClient>(
   {
@@ -18,6 +21,7 @@ const clientSchema = new Schema<IClient>(
     },
     socketId: {
       type: String,
+      default: '',
     },
     groupId: {
       type: [Schema.Types.ObjectId],
@@ -38,5 +42,24 @@ const clientSchema = new Schema<IClient>(
     collection: 'clients',
   },
 )
+
+clientSchema.pre('save', async function (next) {
+  const salt = await bcrypt.genSalt(10)
+  this.password = await bcrypt.hash(this.password, salt)
+})
+
+clientSchema.methods.getSignedJwtToken = function () {
+  return jwt.sign(
+    { id: this._id },
+    process.env.JWT_SECRET || 'secret',
+    {
+      expiresIn: process.env.JWT_EXPIRE,
+    } || {},
+  )
+}
+
+clientSchema.methods.matchPassword = async function (enteredPassword: string) {
+  return bcrypt.compare(enteredPassword, this.password)
+}
 
 export default model<IClient>('clients', clientSchema)

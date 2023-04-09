@@ -14,6 +14,9 @@ export interface IClient {
   groupId: Schema.Types.ObjectId[]
   status: ClientStatus
   isInvisibility: boolean
+
+  getSignedJwtToken: () => string
+  matchPassword: (enteredPassword: string) => Promise<boolean>
 }
 
 export interface IGroup {
