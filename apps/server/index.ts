@@ -19,8 +19,8 @@ import {
   handleRegister,
   handleVerify,
   handleLogout,
-  handleGetAllClient,
 } from './controllers/auth'
+import { handleGetAllClient } from './controllers/profile'
 import { protectedRoute } from './middleware/auth'
 const SocketIO = require('socket.io')
 
