@@ -69,10 +69,20 @@ io.on('connection', (socket: Socket) => {
     handleLogin(io, socket, body)
   })
   socket.on('disconnect', () => {
+    // disconnect is socket.io disconnect event
     handleDisconnect(io, socket)
   })
-  socket.on('logout', () => {
-    handleLogout(io, socket)
+  socket.on('logout', async (body: any) => {
+    // logout is custom user client logout event (token)
+    const token = body.token
+    protectedRoute(io, socket, token)
+      .then((result) => {
+        console.log('before logout result: ', result)
+        handleLogout(io, socket, result.userId)
+      })
+      .catch((error) => {
+        console.log('error: ', error)
+      })
   })
   socket.on('get all client', async (body: any) => {
     const token = body.token

@@ -1,9 +1,8 @@
 /* eslint-disable turbo/no-undeclared-env-vars */
 import { Server, Socket } from 'socket.io'
-import { Schema } from 'mongoose'
 import clientModel from '../database/model/client'
 import jwt from 'jsonwebtoken'
-import { NextFunction } from 'express'
+import { ClientStatus } from '../database/schema/interface'
 const users: string[] = []
 
 const addOnlineUsers = (newSocketId: string) => {
@@ -73,6 +72,11 @@ export const handleLogin = async (io: Server, socket: Socket, body: any) => {
         return yourId(io, false, socketId, '', '', '')
       } else {
         const token = client.getSignedJwtToken()
+        await clientModel.findByIdAndUpdate(
+          client.id,
+          { socketId: socket.id, status: ClientStatus.AVAILABLE },
+          { new: true },
+        )
         return yourId(io, true, socketId, token, client.nickname, String(client._id))
       }
     }
@@ -81,9 +85,14 @@ export const handleLogin = async (io: Server, socket: Socket, body: any) => {
   }
 }
 
-export const handleLogout = async (io: Server, socket: Socket) => {
+export const handleLogout = async (io: Server, socket: Socket, userId: string) => {
   console.log('user logout: ', socket.id)
   //TODO : does backend need to clear the token?
+  const client = await clientModel.findByIdAndUpdate(
+    userId,
+    { socketId: '', status: ClientStatus.OFFLINE },
+    { new: true },
+  )
   users.splice(users.indexOf(socket.id), 1)
   console.log('current users: ', users)
 }
@@ -97,40 +106,28 @@ export const handleDisconnect = (io: Server, socket: Socket) => {
 export const handleVerify = async (io: Server, socket: Socket, token: string) => {
   console.log('verify token', token)
   if (!token || token === 'null') {
-    return verifyStatus(io, socket.id, false)
+    return { isSuccess: verifyStatus(io, socket.id, false).isSuccess, userId: '' }
   }
   try {
     // Verify token
     let decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret') as jwt.JwtPayload
 
-    // console.log(decoded)
     const client = await clientModel.findByIdAndUpdate(
       decoded.id,
-      { socketId: socket.id },
+      { socketId: socket.id, status: ClientStatus.AVAILABLE },
       { new: true },
     )
     if (!client) {
-      return verifyStatus(io, socket.id, false)
+      return { isSuccess: verifyStatus(io, socket.id, false).isSuccess, userId: '' }
     }
     addOnlineUsers(socket.id)
     yourId(io, true, socket.id, token, client.nickname, String(client._id))
-    return verifyStatus(io, socket.id, true)
+    return { isSuccess: verifyStatus(io, socket.id, true).isSuccess, userId: decoded.id }
   } catch (err) {
     console.log(err)
-    return verifyStatus(io, socket.id, false)
+    return { isSuccess: verifyStatus(io, socket.id, false).isSuccess, userId: '' }
   }
 }
-/*
-export const protectedRoute = async (io: Server, socket: Socket, token: string) => {
-  try {
-    if (!(await handleVerify(io, socket, token)).isSuccess) {
-      throw new Error('verify failed')
-    }
-  } catch (error) {
-    throw new Error('verify failed')
-  }
-}
-*/
 export const handleGetAllClient = async (io: Server, socket: Socket) => {
   console.log('get all client')
   const clients = await clientModel.find()
