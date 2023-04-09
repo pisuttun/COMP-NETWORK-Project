@@ -3,6 +3,7 @@ import { Server, Socket } from 'socket.io'
 import { Schema } from 'mongoose'
 import clientModel from '../database/model/client'
 import jwt from 'jsonwebtoken'
+import { NextFunction } from 'express'
 const users: string[] = []
 
 const addOnlineUsers = (newSocketId: string) => {
@@ -117,6 +118,16 @@ export const handleVerify = async (io: Server, socket: Socket, token: string) =>
   } catch (err) {
     console.log(err)
     return verifyStatus(io, socket.id, false)
+  }
+}
+
+export const protectedRoute = async (io: Server, socket: Socket, token: string) => {
+  try {
+    if (!(await handleVerify(io, socket, token)).isSuccess) {
+      throw new Error('verify failed')
+    }
+  } catch (error) {
+    throw new Error('verify failed')
   }
 }
 //TODO: add protect route maybe?

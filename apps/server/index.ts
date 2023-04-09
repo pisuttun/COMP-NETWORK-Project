@@ -20,6 +20,7 @@ import {
   handleVerify,
   handleLogout,
   handleGetAllClient,
+  protectedRoute,
 } from './controllers/auth'
 const SocketIO = require('socket.io')
 
@@ -73,8 +74,15 @@ io.on('connection', (socket: Socket) => {
   socket.on('logout', () => {
     handleLogout(io, socket)
   })
-  socket.on('get all client', () => {
-    handleGetAllClient(io, socket)
+  socket.on('get all client', async (body: any) => {
+    const token = body.token
+    protectedRoute(io, socket, token)
+      .then(() => {
+        handleGetAllClient(io, socket)
+      })
+      .catch((error) => {
+        console.log('error: ', error)
+      })
   })
   //chat routes
   socket.on('send message', (body: any) => {
