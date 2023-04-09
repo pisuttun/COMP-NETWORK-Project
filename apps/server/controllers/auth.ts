@@ -119,3 +119,18 @@ export const handleVerify = async (io: Server, socket: Socket, token: string) =>
     return verifyStatus(io, socket.id, false)
   }
 }
+//TODO: add protect route maybe?
+export const handleGetAllClient = async (io: Server, socket: Socket) => {
+  console.log('get all client')
+  const clients = await clientModel.find()
+  //TODO: add all client result Dto
+  let result: any[] = []
+  result = clients.map((client) => {
+    return {
+      userId: client._id,
+      status: client.status,
+      nickname: client.nickname,
+    }
+  })
+  io.to(socket.id).emit('all client', result)
+}

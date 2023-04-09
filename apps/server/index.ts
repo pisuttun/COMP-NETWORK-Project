@@ -19,6 +19,7 @@ import {
   handleRegister,
   handleVerify,
   handleLogout,
+  handleGetAllClient,
 } from './controllers/auth'
 const SocketIO = require('socket.io')
 
@@ -71,6 +72,9 @@ io.on('connection', (socket: Socket) => {
   })
   socket.on('logout', () => {
     handleLogout(io, socket)
+  })
+  socket.on('get all client', () => {
+    handleGetAllClient(io, socket)
   })
   //chat routes
   socket.on('send message', (body: any) => {
