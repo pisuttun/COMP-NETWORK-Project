@@ -17,6 +17,7 @@ export default function ListGroup() {
         exclusive
         onChange={handleChatList}
         aria-label="text alignment"
+        color="secondary"
         sx={{ display: 'flex', justifyContent: 'space-evenly', width: '100%', color: 'white' }}
       >
         <ToggleButton value="DM" aria-label="DM">
