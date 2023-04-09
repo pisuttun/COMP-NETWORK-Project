@@ -13,7 +13,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "dependencies": {
-    "@dtos": "workspace:*"
+    "@chatAIP/dtos": "workspace:*"
   },
   "devDependencies": {
     "eslint-config-custom": "workspace:*",
