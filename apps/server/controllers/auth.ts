@@ -1,7 +1,16 @@
+/* eslint-disable turbo/no-undeclared-env-vars */
 import { Server, Socket } from 'socket.io'
 import { Schema } from 'mongoose'
 import clientModel from '../database/model/client'
+import jwt from 'jsonwebtoken'
 const users: string[] = []
+
+const addOnlineUsers = (newSocketId: string) => {
+  if (!users.includes(newSocketId)) {
+    users.push(newSocketId)
+  }
+  console.log('current users: ', users)
+}
 
 //TODO: add yourId Dto and change the body type
 const yourId = (
@@ -15,13 +24,15 @@ const yourId = (
   //TODO : add expire time?
   io.to(socketId).emit('your id', { isSuccess, socketId, token, nickname, userId })
 
-  //not push the socketId if it is already in the array
-  if (!users.includes(socketId)) {
-    users.push(socketId)
-  }
-  console.log('current users: ', users)
+  addOnlineUsers(socketId)
   return { isSuccess, socketId, token, nickname, userId }
 }
+
+const verifyStatus = (io: Server, socketId: string, isSuccess: boolean) => {
+  io.to(socketId).emit('verify status', { isSuccess })
+  return { isSuccess }
+}
+
 //TODO: add register Dto and change the body type
 export const handleRegister = async (io: Server, socket: Socket, body: any) => {
   let socketId = socket.id
@@ -73,4 +84,31 @@ export const handleDisconnect = (io: Server, socket: Socket) => {
   console.log('user disconnected: ', socket.id)
   users.splice(users.indexOf(socket.id), 1)
   console.log('current users: ', users)
+}
+
+export const handleVerify = async (io: Server, socket: Socket, token: string) => {
+  console.log('verify token', token)
+  if (!token || token === 'null') {
+    return verifyStatus(io, socket.id, false)
+  }
+  try {
+    // Verify token
+    let decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret') as jwt.JwtPayload
+
+    // console.log(decoded)
+    const client = await clientModel.findByIdAndUpdate(
+      decoded.id,
+      { socketId: socket.id },
+      { new: true },
+    )
+    if (!client) {
+      return verifyStatus(io, socket.id, false)
+    }
+    addOnlineUsers(socket.id)
+    yourId(io, true, socket.id, token, client.nickname, String(client._id))
+    return verifyStatus(io, socket.id, true)
+  } catch (err) {
+    console.log(err)
+    return verifyStatus(io, socket.id, false)
+  }
 }

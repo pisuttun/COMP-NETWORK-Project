@@ -13,7 +13,7 @@ import clientModel from './database/model/client'
 import chatDataModel from './database/model/chatData'
 import groupModel from './database/model/group'
 import { ClientStatus } from './database/schema/interface'
-import { handleDisconnect, handleLogin, handleRegister } from './controllers/auth'
+import { handleDisconnect, handleLogin, handleRegister, handleVerify } from './controllers/auth'
 const SocketIO = require('socket.io')
 
 var io: Server
@@ -50,11 +50,7 @@ io.on('connection', (socket: Socket) => {
   //verify the token
   socket.on('verify token', (body: any) => {
     const token = body.token
-    console.log('verify token', token)
-    //TODO: verify token
-    //verify()
-    const isSuccess = true
-    io.to(socket.id).emit('verify status', { isSuccess })
+    handleVerify(io, socket, token)
   })
 
   //auth routes

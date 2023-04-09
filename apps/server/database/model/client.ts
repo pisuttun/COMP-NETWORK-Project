@@ -1,3 +1,4 @@
+/* eslint-disable turbo/no-undeclared-env-vars */
 import { model, Schema } from 'mongoose'
 import { IClient, ClientStatus } from '../schema/interface'
 import bcrypt from 'bcryptjs'
