@@ -20,8 +20,8 @@ import {
   handleVerify,
   handleLogout,
   handleGetAllClient,
-  protectedRoute,
 } from './controllers/auth'
+import { protectedRoute } from './middleware/auth'
 const SocketIO = require('socket.io')
 
 var io: Server

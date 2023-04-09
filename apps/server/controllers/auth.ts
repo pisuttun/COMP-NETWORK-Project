@@ -120,7 +120,7 @@ export const handleVerify = async (io: Server, socket: Socket, token: string) =>
     return verifyStatus(io, socket.id, false)
   }
 }
-
+/*
 export const protectedRoute = async (io: Server, socket: Socket, token: string) => {
   try {
     if (!(await handleVerify(io, socket, token)).isSuccess) {
@@ -130,7 +130,7 @@ export const protectedRoute = async (io: Server, socket: Socket, token: string) 
     throw new Error('verify failed')
   }
 }
-//TODO: add protect route maybe?
+*/
 export const handleGetAllClient = async (io: Server, socket: Socket) => {
   console.log('get all client')
   const clients = await clientModel.find()
