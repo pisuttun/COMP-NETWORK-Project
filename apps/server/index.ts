@@ -13,7 +13,13 @@ import clientModel from './database/model/client'
 import chatDataModel from './database/model/chatData'
 import groupModel from './database/model/group'
 import { ClientStatus } from './database/schema/interface'
-import { handleDisconnect, handleLogin, handleRegister, handleVerify } from './controllers/auth'
+import {
+  handleDisconnect,
+  handleLogin,
+  handleRegister,
+  handleVerify,
+  handleLogout,
+} from './controllers/auth'
 const SocketIO = require('socket.io')
 
 var io: Server
@@ -55,7 +61,6 @@ io.on('connection', (socket: Socket) => {
 
   //auth routes
   socket.on('register', (body: any) => {
-    console.log('register: ', body)
     handleRegister(io, socket, body)
   })
   socket.on('login', (body: any) => {
@@ -64,7 +69,10 @@ io.on('connection', (socket: Socket) => {
   socket.on('disconnect', () => {
     handleDisconnect(io, socket)
   })
-
+  socket.on('logout', () => {
+    handleLogout(io, socket)
+  })
+  //chat routes
   socket.on('send message', (body: any) => {
     console.log('receive: ', body)
     io.emit('message', body)

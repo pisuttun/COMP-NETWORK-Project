@@ -80,6 +80,13 @@ export const handleLogin = async (io: Server, socket: Socket, body: any) => {
   }
 }
 
+export const handleLogout = async (io: Server, socket: Socket) => {
+  console.log('user logout: ', socket.id)
+  //TODO : does backend need to clear the token?
+  users.splice(users.indexOf(socket.id), 1)
+  console.log('current users: ', users)
+}
+
 export const handleDisconnect = (io: Server, socket: Socket) => {
   console.log('user disconnected: ', socket.id)
   users.splice(users.indexOf(socket.id), 1)
