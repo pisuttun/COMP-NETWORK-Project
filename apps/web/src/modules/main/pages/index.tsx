@@ -3,11 +3,11 @@ import Typography from '@mui/material/Typography'
 import theme from 'common/config/theme'
 import { BoxContainer, RootContainer } from './styled'
 import TextField from 'common/components/TextField'
+import PasswordTextField from 'common/components/PasswordTextField'
 
 export default function MainPage() {
   return(
     <RootContainer>
-      <div>
         {/* has to div cuz p set default to horizontal layout */}
         <Typography variant="h3" 
           sx={{ color: theme.palette.primary.light }}
@@ -25,16 +25,14 @@ export default function MainPage() {
               disableUnderline: true, 
             }}
           />
-          <TextField
+          <PasswordTextField
             fullWidth 
-            label="password" 
             variant="filled"
             InputProps={{ 
               disableUnderline: true, 
             }}
           />
         </BoxContainer>
-      </div>
     </RootContainer>
   )
 }

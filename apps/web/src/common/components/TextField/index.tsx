@@ -4,7 +4,11 @@ import { FC } from 'react'
 
 const TextField: FC<TextFieldProps> = (props) => {
   return (
-    <TextFieldMUI
+    <TextFieldMUI 
+      style={{
+        backgroundColor: theme.palette.primary.light,
+        borderRadius: '12px',
+      }}
       size="small"
       {...props}
       InputProps={{
@@ -12,10 +16,6 @@ const TextField: FC<TextFieldProps> = (props) => {
         sx: {
           borderRadius: '10px',
           backgroundColor: theme.palette.primary.light,
-          '& .MuiInputBase-input':  {
-              borderRadius: '10px',
-              backgroundColor: theme.palette.primary.light,
-          },
           '& ::-ms-reveal': {
             display: 'none',
           },

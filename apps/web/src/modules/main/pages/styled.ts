@@ -5,7 +5,7 @@ export const BoxContainer = styled('div')`
   flex-direction: column;
   margin-bottom: 10vh;
   gap: 16px;
-  width: 100%;
+  width: 30%;
   height: fit-content;
   background-image: linear-gradient(108.84deg, #322036 5.24%, #332037 5.26%, #af79f4 200.3%);
   border-radius: 12px;

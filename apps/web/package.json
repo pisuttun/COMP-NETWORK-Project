@@ -9,11 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chatAIP/dtos": "workspace:*",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
+    "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.11.14",
     "@mui/system": "^5.11.16",
-    "@chatAIP/dtos": "workspace:*",
     "next": "^13.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
