@@ -15,8 +15,7 @@ export const ChatChoiceContainer = styled('div')`
   justify-content: flex-start;
   align-items: flex-start;
   width: 100%;
-  padding: 10px;
-  gap: 1rem;
+  padding-left: 1.5rem;
 `
 export const UserContainer = styled('div')`
   display: flex;
