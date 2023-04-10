@@ -13,7 +13,7 @@ export default function MainPage() {
           sx={{ color: theme.palette.primary.light, textAlign: 'center' }}>ChatIP</Typography>
         <BoxContainer>
           <Typography variant="h5" 
-            sx={{ color: theme.palette.common.white, textAlign: 'center' }}>Login</Typography>
+            sx={{ color: theme.palette.common.white, textAlign: 'center' }}>Register</Typography>
           <TextField
             label="username" 
             InputProps={{ 
@@ -35,13 +35,13 @@ export default function MainPage() {
           }}
           type = "submit"
           >
-            Login
+            Register
           </Button>
           <Typography variant="subtitle2" sx={{ color: theme.palette.primary.light, textAlign: 'center' }}>
-            do not have an account? {' '}
-            <Link href="/register" sx={{ color: theme.palette.primary.light}}>
+            already have an account? {' '}
+            <Link href="/" sx={{ color: theme.palette.primary.light}}>
               <Typography variant="subtitle1" sx={{ color: theme.palette.primary.light}} component="a">
-                Register
+                Login
               </Typography>
             </Link>
           </Typography>
