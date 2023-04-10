@@ -5,6 +5,8 @@ import { FC } from 'react'
 const TextField: FC<TextFieldProps> = (props) => {
   return (
     <TextFieldMUI 
+      fullWidth
+      variant="filled"
       style={{
         backgroundColor: theme.palette.primary.light,
         borderRadius: '12px',
@@ -14,7 +16,7 @@ const TextField: FC<TextFieldProps> = (props) => {
       InputProps={{
         ...props.InputProps,
         sx: {
-          borderRadius: '10px',
+          borderRadius: '12px',
           backgroundColor: theme.palette.primary.light,
           '& ::-ms-reveal': {
             display: 'none',
