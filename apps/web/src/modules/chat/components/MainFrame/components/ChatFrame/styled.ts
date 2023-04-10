@@ -13,6 +13,8 @@ export const ChatBox = styled('div')`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  padding: 24px;
+  gap: 2rem;
   flex-grow: 1;
 `
 export const TextInput = styled(TextField)`
