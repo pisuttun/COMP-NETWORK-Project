@@ -75,10 +75,10 @@ io.on('connection', (socket: Socket) => {
   socket.on('logout', async (body: any) => {
     // logout is custom user client logout event (token)
     const token = body.token
-    protectedRoute(io, socket, token)
+    protectedRoute(io, socket)
       .then((result) => {
         console.log('before logout result: ', result)
-        handleLogout(io, socket, result.userId)
+        handleLogout(io, socket, String(result._id))
       })
       .catch((error) => {
         console.log('error: ', error)
@@ -86,7 +86,7 @@ io.on('connection', (socket: Socket) => {
   })
   socket.on('get all client', async (body: any) => {
     const token = body.token
-    protectedRoute(io, socket, token)
+    protectedRoute(io, socket)
       .then(() => {
         handleGetAllClient(io, socket)
       })

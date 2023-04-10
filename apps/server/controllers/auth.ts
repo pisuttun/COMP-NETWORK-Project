@@ -87,7 +87,7 @@ export const handleLogin = async (io: Server, socket: Socket, body: any) => {
 
 export const handleLogout = async (io: Server, socket: Socket, userId: string) => {
   console.log('user logout: ', socket.id)
-  //TODO : does backend need to clear the token?
+
   const client = await clientModel.findByIdAndUpdate(
     userId,
     { socketId: '', status: ClientStatus.OFFLINE },
@@ -97,8 +97,20 @@ export const handleLogout = async (io: Server, socket: Socket, userId: string) =
   console.log('current users: ', users)
 }
 
-export const handleDisconnect = (io: Server, socket: Socket) => {
+export const handleDisconnect = async (io: Server, socket: Socket) => {
   console.log('user disconnected: ', socket.id)
+
+  //clear socketId in db
+  const client = await clientModel.find({ socketId: socket.id })
+  //use for to ensure all socketId are cleared
+  for (let i = 0; i < client.length; i++) {
+    await clientModel.findByIdAndUpdate(
+      client[i].id,
+      { socketId: '', status: ClientStatus.OFFLINE },
+      { new: true },
+    )
+  }
+
   users.splice(users.indexOf(socket.id), 1)
   console.log('current users: ', users)
 }
