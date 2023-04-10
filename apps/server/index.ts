@@ -22,6 +22,7 @@ import {
 } from './controllers/auth'
 import { handleGetAllClient } from './controllers/profile'
 import { protectedRoute } from './middleware/auth'
+import { handleSendMessage } from './controllers/chat'
 const SocketIO = require('socket.io')
 
 var io: Server
@@ -73,8 +74,7 @@ io.on('connection', (socket: Socket) => {
     handleDisconnect(io, socket)
   })
   socket.on('logout', async (body: any) => {
-    // logout is custom user client logout event (token)
-    const token = body.token
+    // logout is custom user client logout event
     protectedRoute(io, socket)
       .then((result) => {
         console.log('before logout result: ', result)
@@ -84,8 +84,9 @@ io.on('connection', (socket: Socket) => {
         console.log('error: ', error)
       })
   })
+
+  //profile routes
   socket.on('get all client', async (body: any) => {
-    const token = body.token
     protectedRoute(io, socket)
       .then(() => {
         handleGetAllClient(io, socket)
@@ -94,10 +95,16 @@ io.on('connection', (socket: Socket) => {
         console.log('error: ', error)
       })
   })
+
   //chat routes
   socket.on('send message', (body: any) => {
-    console.log('receive: ', body)
-    io.emit('message', body)
+    protectedRoute(io, socket)
+      .then(() => {
+        handleSendMessage(io, socket, body)
+      })
+      .catch((error) => {
+        console.log('error: ', error)
+      })
   })
 })
 
