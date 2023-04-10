@@ -1,7 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
-import Typography from '@mui/material/Typography'
+import React from 'react'
 import { ChatBox, RootContainer, TextInput } from './styled'
-import { TextField } from '@mui/material'
 import useTextFieldControl from './hooks/useTextFieldControl'
 
 export default function ChatFrame() {
