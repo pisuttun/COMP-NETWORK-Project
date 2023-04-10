@@ -1,0 +1,39 @@
+import { TextField as TextFieldMUI, TextFieldProps } from '@mui/material'
+import theme from 'common/config/theme'
+import { FC } from 'react'
+
+const TextField: FC<TextFieldProps> = (props) => {
+  return (
+    <TextFieldMUI
+      size="small"
+      {...props}
+      InputProps={{
+        ...props.InputProps,
+        sx: {
+          borderRadius: '10px',
+          backgroundColor: theme.palette.primary.light,
+          '& .MuiInputBase-input':  {
+              borderRadius: '10px',
+              backgroundColor: theme.palette.primary.light,
+          },
+          '& ::-ms-reveal': {
+            display: 'none',
+          },
+          '& ::-ms-clear': {
+            display: 'none',
+          },
+          ...props.InputProps?.sx,
+        },
+      }}
+      InputLabelProps={{
+        sx: {
+          color: theme.palette.common.black,
+          ...props.InputLabelProps?.sx,
+        },
+        ...props.InputLabelProps,
+      }}
+    />
+  )
+}
+
+export default TextField
