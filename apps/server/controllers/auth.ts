@@ -2,8 +2,7 @@
 import { Server, Socket } from 'socket.io'
 import clientModel from '../database/model/client'
 import jwt from 'jsonwebtoken'
-import { ClientStatus } from '../database/schema/interface'
-import { VerifyStatusDto, YourIdDto } from '@chatAIP/dtos'
+import { VerifyStatusDto, YourIdDto, ClientStatus } from '@chatAIP/dtos'
 const users: string[] = []
 
 const addOnlineUsers = (newSocketId: string) => {

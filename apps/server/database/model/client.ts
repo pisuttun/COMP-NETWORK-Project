@@ -1,6 +1,7 @@
 /* eslint-disable turbo/no-undeclared-env-vars */
 import { model, Schema } from 'mongoose'
-import { IClient, ClientStatus } from '../schema/interface'
+import { IClient } from '../schema/interface'
+import { ClientStatus } from '@chatAIP/dtos'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 

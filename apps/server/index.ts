@@ -12,7 +12,7 @@ import connectDatabase from './database/dbConnect'
 import clientModel from './database/model/client'
 import chatDataModel from './database/model/chatData'
 import groupModel from './database/model/group'
-import { ClientStatus } from './database/schema/interface'
+import { ClientStatus } from '@chatAIP/dtos'
 import {
   handleDisconnect,
   handleLogin,
