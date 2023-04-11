@@ -5,9 +5,9 @@ import { BoxContainer, RootContainer, SubmitButton } from './styled'
 import TextField from 'common/components/TextField'
 import PasswordTextField from 'common/components/PasswordTextField'
 import Link from 'next/link'
-import useLoginForm from '../hooks/useLoginForm'
+import useRegisterForm from '../hooks/useRegisterForm'
 
-const MainPage = () => {
+const RegisterPage = () => {
   const {
     username,
     password,
@@ -16,7 +16,7 @@ const MainPage = () => {
     handleSubmit,
     handleUsernameChange,
     handlePasswordChange,
-  } = useLoginForm();
+  } = useRegisterForm();
 
   return(
     <RootContainer onSubmit={handleSubmit} >
@@ -25,7 +25,7 @@ const MainPage = () => {
         <BoxContainer>
           <Typography 
             variant="h5" 
-            sx={{ color: theme.palette.common.white, textAlign: 'center' }}>Login</Typography>
+            sx={{ color: theme.palette.common.white, textAlign: 'center' }}>Register</Typography>
           <TextField
             label="username"
             value={username}
@@ -46,7 +46,7 @@ const MainPage = () => {
               disableUnderline: true, 
             }}
           />
-          <SubmitButton type = "submit">Login</SubmitButton>
+          <SubmitButton type = "submit">Register</SubmitButton>
           <div style={{ 
             display:'flex', 
             justifyContent: 'center',
@@ -61,11 +61,11 @@ const MainPage = () => {
                 width: '100%',
               }}
             >
-            does not have an account?
+            already have an account?
             </Typography>
-            <Link href="/register" passHref style={{ color: theme.palette.primary.light}}>
+            <Link href="/" passHref style={{ color: theme.palette.primary.light}}>
               <Typography variant="subtitle1" sx={{ color: theme.palette.primary.light}}>
-                Register
+                Login
               </Typography>
             </Link>
           </div>
@@ -74,4 +74,4 @@ const MainPage = () => {
   )
 }
           
-export default MainPage
+export default RegisterPage

@@ -1,21 +1,29 @@
 import { SocketProvider } from 'common/context/socketContext'
 import type { AppProps } from 'next/app'
 import React from 'react'
-import { Box, CssBaseline } from '@mui/material'
+import { Box, CssBaseline, ThemeProvider } from '@mui/material'
+import theme from 'common/config/theme'
+import { SnackbarProvider } from 'common/context/SnackbarContext'
 
 const App = (props: AppProps) => {
   const { Component, pageProps } = props
   return (
     <>
       <SocketProvider>
-        <CssBaseline />
-        <Box
-          style={{
-            backgroundImage: `linear-gradient(111.36deg, #412846 17.33%, #5A3C6B 81.39%)`,
-          }}
-        >
-          <Component {...pageProps} />
-        </Box>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <SnackbarProvider>
+            <Box
+              style={{
+                backgroundImage: `linear-gradient(109.93deg, #332037 0%, #6C4484 81.48%)`,
+                width: '100vw',
+                height: '100vh',
+              }}
+            >
+                <Component {...pageProps} />
+            </Box>
+          </SnackbarProvider>
+        </ThemeProvider>
       </SocketProvider>
     </>
   )
