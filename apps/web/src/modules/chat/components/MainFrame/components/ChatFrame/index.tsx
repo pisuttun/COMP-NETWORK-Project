@@ -2,6 +2,8 @@ import React from 'react'
 import { ChatBox, RootContainer, TextInput } from './styled'
 import useTextFieldControl from './hooks/useTextFieldControl'
 import ChatLine from './components/ChatLine'
+import ChatLineContainer from './components/ChatLineContainer'
+import { chatLog } from './placeholder'
 
 export default function ChatFrame() {
   const { value, isOverflow, textFieldRef } = useTextFieldControl()
@@ -9,9 +11,7 @@ export default function ChatFrame() {
   return (
     <RootContainer>
       <ChatBox>
-        <ChatLine sender="prias" time="24/3/2023 18:00" message="test1" />
-        <ChatLine sender="prias" time="24/3/2023 18:00" message="test1" />
-        <ChatLine sender="prias" time="24/3/2023 18:00" message="test1" />
+        <ChatLineContainer Chat={chatLog[0]} />
       </ChatBox>
       <TextInput
         inputRef={textFieldRef}
