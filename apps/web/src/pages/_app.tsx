@@ -13,7 +13,7 @@ const App = (props: AppProps) => {
           <CssBaseline />
           <Box
             style={{
-              backgroundImage: `linear-gradient(111.36deg, #412846 17.33%, #5A3C6B 81.39%)`,
+              backgroundImage: `linear-gradient(109.93deg, #332037 0%, #6C4484 81.48%)`,
               width: '100vw',
               height: '100vh',
             }}

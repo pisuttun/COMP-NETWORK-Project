@@ -1,10 +1,10 @@
 import React from 'react'
 import Typography from '@mui/material/Typography'
 import theme from 'common/config/theme'
-import { BoxContainer, RootContainer } from './styled'
+import { BoxContainer, RootContainer, SubmitButton } from './styled'
 import TextField from 'common/components/TextField'
 import PasswordTextField from 'common/components/PasswordTextField'
-import { Button, Link } from '@mui/material'
+import Link from 'next/link'
 
 export default function MainPage() {
   return(
@@ -25,26 +25,29 @@ export default function MainPage() {
               disableUnderline: true, 
             }}
           />
-          <Button sx={{ 
-            borderRadius: '12px',
-            color: theme.palette.primary.main, 
-            backgroundColor: theme.palette.common.white,
-            width: '30%',
-            alignItems: 'center',
+          <SubmitButton type = "submit">Login</SubmitButton>
+          <div style={{ 
+            display:'flex', 
             justifyContent: 'center',
-          }}
-          type = "submit"
-          >
-            Login
-          </Button>
-          <Typography variant="subtitle2" sx={{ color: theme.palette.primary.light, textAlign: 'center' }}>
-            do not have an account? {' '}
-            <Link href="/register" sx={{ color: theme.palette.primary.light}}>
-              <Typography variant="subtitle1" sx={{ color: theme.palette.primary.light}} component="a">
+            alignItems: 'center',
+            gap: '5px',
+            }}>
+            <Typography variant="subtitle2" 
+              noWrap = {true}
+              sx={{ 
+                color: theme.palette.primary.light, 
+                textAlign: 'center',
+                width: '100%',
+              }}
+            >
+            do not have an account?
+            </Typography>
+            <Link href="/register" passHref style={{ color: theme.palette.primary.light}}>
+              <Typography variant="subtitle1" sx={{ color: theme.palette.primary.light}}>
                 Register
               </Typography>
             </Link>
-          </Typography>
+          </div>
         </BoxContainer>
     </RootContainer>
   )
