@@ -20,16 +20,28 @@ import {
   handleVerify,
   handleLogout,
 } from './controllers/auth'
-import { handleGetAllClient } from './controllers/profile'
+import { handleGetAllClient } from './controllers/profiles'
 import { protectedRoute } from './middleware/auth'
-import { handleSendMessage } from './controllers/chat'
+import { handleSendMessage } from './controllers/messages'
+import messageRoute from './routes/messages'
 const SocketIO = require('socket.io')
 
 var io: Server
 var server: https.Server | http.Server
 dotenv.config()
 const app = express()
+
+// Body parser
+app.use(express.json())
+
+// Enable CORS
 app.use(cors())
+
+//routes
+app.use('/api/messages', messageRoute)
+app.get('/', (req, res) => {
+  res.send('hello from express')
+})
 
 //connect to database
 try {
@@ -52,6 +64,7 @@ if (process.env.NODE_ENV === 'production') {
   server = http.createServer(app)
   io = new Server(server)
 }
+console.log('server', typeof server)
 
 const users: string[] = []
 io.on('connection', (socket: Socket) => {
@@ -96,7 +109,7 @@ io.on('connection', (socket: Socket) => {
       })
   })
 
-  //chat routes
+  //message routes
   socket.on('send message', (body: any) => {
     protectedRoute(io, socket)
       .then(() => {
