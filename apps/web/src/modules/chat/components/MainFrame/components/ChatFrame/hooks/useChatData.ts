@@ -11,10 +11,8 @@ const useChatData = () => {
   const fetchData = useCallback(async () => {
     try {
       if (pageControl.current <= page && hasMore) {
-        console.log('TTT')
         pageControl.current = page + 1
         const res = chatLog[page]
-        console.log(res)
         setChat((prevChat) => {
           if (prevChat) {
             return [...prevChat, ...res]
@@ -29,7 +27,7 @@ const useChatData = () => {
     } catch (err) {
       console.log(err)
     }
-  }, [page])
+  }, [hasMore, page])
   return { hasMore, fetchData, chat }
 }
 export default useChatData
