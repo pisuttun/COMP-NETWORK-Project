@@ -28,7 +28,8 @@ const useLoginForm = () => {
       socket.emit('login', body)
       socket.on('your id', (data) => {
         if (!data.isSuccess) {
-          displaySnackbar('Username or Password is wrong', 'error')
+          if (username !== '' && password !== '')
+            displaySnackbar('Username or Password is wrong', 'error')
         } else router.push('/chat')
         localStorage.setItem('token', data.token)
       })

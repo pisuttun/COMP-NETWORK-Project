@@ -1,10 +1,21 @@
-import { TextField as TextFieldMUI, TextFieldProps } from '@mui/material'
+import { TextField as TextFieldMUI, TextFieldProps, styled } from '@mui/material'
 import theme from 'common/config/theme'
 import { FC } from 'react'
 
+const StyledTextField = styled(TextFieldMUI)`
+  /* Change the white to any color */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover, 
+  input:-webkit-autofill:focus, 
+  input:-webkit-autofill:active{
+      -webkit-box-shadow: 0 0 0 30px ${({ theme }) => theme.palette.primary.light} inset !important;
+      border-radius: 12px;
+  }
+`
+
 const TextField: FC<TextFieldProps> = (props) => {
   return (
-    <TextFieldMUI 
+    <StyledTextField 
       fullWidth
       variant="filled"
       style={{
