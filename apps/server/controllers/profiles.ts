@@ -26,26 +26,35 @@ export const handleUpdateClientInfo = async (
 ) => {
   console.log('update client info')
   let { senderId, status, nickname } = body
-
-  if (!senderId) {
-    senderId = String(await convertSocketIdToUserId(socket.id))
+  try {
+    const userId = String(await convertSocketIdToUserId(socket.id))
+    if (!senderId) {
+      senderId = userId
+    } else {
+      if (senderId !== userId) {
+        throw new Error('senderId is not match')
+      }
+    }
+    const client = await clientModel.findByIdAndUpdate(
+      senderId,
+      {
+        isInvisibility: status === ClientStatus.OFFLINE ? true : false,
+        nickname,
+      },
+      { new: true },
+    )
+    if (!client) {
+      throw new Error('client not found')
+    }
+    const result: ClientInfoDto = {
+      userId: String(client._id),
+      status: client.isInvisibility ? ClientStatus.OFFLINE : client.status,
+      nickname: client.nickname,
+    }
+    io.emit('client info update', result)
+    return result
+  } catch (error) {
+    console.log('error in update client info: ', error)
+    return null
   }
-  const client = await clientModel.findByIdAndUpdate(
-    senderId,
-    {
-      isInvisibility: status === ClientStatus.OFFLINE ? true : false,
-      nickname,
-    },
-    { new: true },
-  )
-  if (!client) {
-    throw new Error('client not found')
-  }
-  const result: ClientInfoDto = {
-    userId: String(client._id),
-    status: client.isInvisibility ? ClientStatus.OFFLINE : client.status,
-    nickname: client.nickname,
-  }
-  io.emit('client info update', result)
-  return result
 }
