@@ -2,6 +2,7 @@ import { useSnackbar } from 'common/context/SnackbarContext'
 import { useSocket } from 'common/context/socketContext'
 import router from 'next/router'
 import { useState } from 'react'
+import { UserCredentialsDto } from '@chatAIP/dtos'
 
 const useLoginForm = () => {
   const [username, setUsername] = useState('')
@@ -20,7 +21,7 @@ const useLoginForm = () => {
       setPasswordError('Password is required')
     }
     try {
-      const body: any = {
+      const body: UserCredentialsDto = {
         username: username,
         password: password,
       }

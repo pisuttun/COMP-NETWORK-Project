@@ -1,6 +1,7 @@
 import { useSocket } from 'common/context/socketContext'
 import router from 'next/router'
 import { useState } from 'react'
+import { UserCredentialsDto } from '@chatAIP/dtos'
 
 const useRegisterForm = () => {
   const [username, setUsername] = useState('')
@@ -18,7 +19,7 @@ const useRegisterForm = () => {
       setPasswordError('Password is required')
     }
     try {
-      const body: any = {
+      const body: UserCredentialsDto = {
         username: username,
         password: password,
       }
