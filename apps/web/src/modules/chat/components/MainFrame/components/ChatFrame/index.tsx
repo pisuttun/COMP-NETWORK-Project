@@ -14,7 +14,7 @@ export default function ChatFrame() {
   return (
     <RootContainer>
       <ChatBox>
-        <ChatLineContainer Chat={chat} />
+        <ChatLineContainer Chat={chat} Loader={fetchData} />
       </ChatBox>
       <TextInput
         inputRef={textFieldRef}
