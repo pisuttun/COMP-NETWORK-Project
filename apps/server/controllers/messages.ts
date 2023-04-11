@@ -17,45 +17,53 @@ export const handleSendMessage = async (io: Server, socket: Socket, body: SendMe
   receiverId = receiverId ? receiverId : undefined
   groupId = groupId ? groupId : undefined
 
-  //send to receiver
+  //save to database
+  const newChatData = await chatData.create({
+    text,
+    senderId,
+    receiverId,
+    groupId,
+  })
+  //generate result with Dto type
+  const result: NewMessageDto = {
+    messageId: String(newChatData._id),
+    text,
+    senderId,
+    senderNickname: senderClient[0].nickname,
+    createdAt: newChatData.createdAt,
+  }
+  // send to receiver
   if (receiverId) {
     console.log('receive: ', body)
-    //save to database
-    const newChatData = await chatData.create({
-      text,
-      senderId,
-      receiverId,
-      groupId,
-    })
     const socketIdObject = (await clientModel.findById(receiverId).select('socketId')) || {
       socketId: '',
     }
     const socketId = socketIdObject.socketId
-    const result: NewMessageDto = {
-      messageId: String(newChatData._id),
-      text,
-      senderId,
-      senderNickname: senderClient[0].nickname,
-      createdAt: newChatData.createdAt,
-    }
+
     console.log('socketId: ', socketId)
     io.to(socketId).emit('new message', {
-      result,
+      ...result,
     })
   }
-  //TODO: send to group
+  // send to group
+  if (groupId) {
+    console.log('receive: ', body)
+    // TODO: or change to socket.join(groupId) instead? , socket.on(groupId + ' message") is kinda weird
+    io.emit(groupId + ' message', {
+      ...result,
+    })
+  }
 }
 
 export const handleGetAllMessage = async (req: any, res: any) => {
   console.log('get all chat data')
   console.log('req : ', req.body)
   const reqBody: ReqGetMessageDto = req.body
-  const { lastedMessageId, senderId, receiverId, groupId } = reqBody
-  //  const chatDataList = await chatData.aggregate([{ $match: { senderId: senderId } }])
+  const { latestMessageId, senderId, receiverId, groupId } = reqBody
 
   let chatDataQuery: any = {}
-  if (lastedMessageId) {
-    chatDataQuery = { _id: { $lte: lastedMessageId } }
+  if (latestMessageId) {
+    chatDataQuery = { _id: { $lte: latestMessageId } }
   }
   if (senderId) {
     chatDataQuery = {
