@@ -21,7 +21,7 @@ import { protectedRoute } from './middleware/auth'
 import { handleSendMessage } from './controllers/messages'
 import messageRoute from './routes/messages'
 import { CreateGroupDto, SendMessageDto, UserCredentialsDto, VerifyTokenDto } from '@chatAIP/dtos'
-import { handleCreateGroup } from './controllers/groups'
+import { handleCreateGroup, handleGetAllGroup } from './controllers/groups'
 const SocketIO = require('socket.io')
 
 var io: Server
@@ -132,6 +132,15 @@ io.on('connection', (socket: Socket) => {
     protectedRoute(io, socket)
       .then(() => {
         handleCreateGroup(io, socket, body)
+      })
+      .catch((error) => {
+        console.log('error: ', error)
+      })
+  })
+  socket.on('get all group', () => {
+    protectedRoute(io, socket)
+      .then(() => {
+        handleGetAllGroup(io, socket)
       })
       .catch((error) => {
         console.log('error: ', error)
