@@ -1,4 +1,4 @@
-import { styled } from '@mui/material'
+import { Button, styled } from '@mui/material'
 
 export const BoxContainer = styled('div')`
   display: flex;
@@ -12,7 +12,7 @@ export const BoxContainer = styled('div')`
   padding: 24px;
   align-items: center;
   justify-content: center;
-  shadow: 4px 4px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 `
 
 export const RootContainer = styled('form')`
@@ -22,4 +22,20 @@ export const RootContainer = styled('form')`
   justify-content: center;
   flex-direction: column;
   gap: 30px;
+`
+export const StyledButton = styled(Button)`
+  // color: ${({ theme }) => theme.palette.primary.main},
+  // width: 30%,
+  // alignItems: center,
+  // justifyContent: center,
+  // boxshadow: rgba(0, 0, 0, 0.35) 0px 5px 15px,
+`
+
+export const SubmitButton = styled(StyledButton)`
+  padding: 8px 24px;
+  border-radius: 12px;
+  background-color: ${({ theme }) => theme.palette.common.white};
+  &:hover {
+    background-color: ${({ theme }) => theme.palette.primary.light};
+  }
 `
