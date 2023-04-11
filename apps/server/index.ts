@@ -24,6 +24,7 @@ import { handleGetAllClient } from './controllers/profiles'
 import { protectedRoute } from './middleware/auth'
 import { handleSendMessage } from './controllers/messages'
 import messageRoute from './routes/messages'
+import { SendMessageDto, UserCredentialsDto, VerifyTokenDto } from '@chatAIP/dtos'
 const SocketIO = require('socket.io')
 
 var io: Server
@@ -70,27 +71,27 @@ const users: string[] = []
 io.on('connection', (socket: Socket) => {
   console.log('new socket connection: ', socket.id)
   //verify the token
-  socket.on('verify token', (body: any) => {
+  socket.on('verify token', (body: VerifyTokenDto) => {
     const token = body.token
     handleVerify(io, socket, token)
   })
 
   //auth routes
-  socket.on('register', (body: any) => {
+  socket.on('register', (body: UserCredentialsDto) => {
     handleRegister(io, socket, body)
   })
-  socket.on('login', (body: any) => {
+  socket.on('login', (body: UserCredentialsDto) => {
     handleLogin(io, socket, body)
   })
   socket.on('disconnect', () => {
     // disconnect is socket.io disconnect event
     handleDisconnect(io, socket)
   })
-  socket.on('logout', async (body: any) => {
+  socket.on('logout', async () => {
     // logout is custom user client logout event
     protectedRoute(io, socket)
       .then((result) => {
-        console.log('before logout result: ', result)
+        //console.log('before logout result: ', result)
         handleLogout(io, socket, String(result._id))
       })
       .catch((error) => {
@@ -99,7 +100,7 @@ io.on('connection', (socket: Socket) => {
   })
 
   //profile routes
-  socket.on('get all client', async (body: any) => {
+  socket.on('get all client', async () => {
     protectedRoute(io, socket)
       .then(() => {
         handleGetAllClient(io, socket)
@@ -110,7 +111,7 @@ io.on('connection', (socket: Socket) => {
   })
 
   //message routes
-  socket.on('send message', (body: any) => {
+  socket.on('send message', (body: SendMessageDto) => {
     protectedRoute(io, socket)
       .then(() => {
         handleSendMessage(io, socket, body)
