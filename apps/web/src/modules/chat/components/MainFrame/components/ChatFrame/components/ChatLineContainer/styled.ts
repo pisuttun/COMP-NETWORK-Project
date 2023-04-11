@@ -2,7 +2,7 @@ import { styled } from '@mui/material'
 
 export const RootContainer = styled('div')`
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   justify-content: flex-start;
   align-items: flex-start;
   background-color: transparent;

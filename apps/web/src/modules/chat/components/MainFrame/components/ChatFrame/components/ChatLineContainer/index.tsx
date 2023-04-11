@@ -6,9 +6,10 @@ export default function ChatLineContainer(props: ChatLineContainerProps) {
   const { Chat } = props
   return (
     <RootContainer>
-      {Chat.map((item, index) => {
-        return <ChatLine sender={item.sender} time={item.time} message={item.message} />
-      })}
+      {Chat &&
+        Chat.map((item, index) => {
+          return <ChatLine sender={item.sender} time={item.time} message={item.message} />
+        })}
     </RootContainer>
   )
 }
