@@ -1,9 +1,5 @@
 import { Schema } from 'mongoose'
-
-export enum ClientStatus {
-  AVAILABLE = 'AVAILABLE',
-  OFFLINE = 'OFFLINE',
-}
+import { ClientStatus } from '@chatAIP/dtos'
 
 export interface IClient {
   _id: Schema.Types.ObjectId
