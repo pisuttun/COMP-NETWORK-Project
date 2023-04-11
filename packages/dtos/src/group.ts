@@ -8,3 +8,8 @@ export interface GroupInfoDto {
   groupName: String
   isJoined: Boolean
 }
+
+export interface GroupClientIdDto {
+  groupId: String
+  clientId: String
+}

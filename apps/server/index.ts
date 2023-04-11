@@ -8,7 +8,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 
 import connectDatabase from './database/dbConnect'
-import { UpdateClientInfoDto } from '@chatAIP/dtos'
+import { GroupClientIdDto, UpdateClientInfoDto } from '@chatAIP/dtos'
 import {
   handleDisconnect,
   handleLogin,
@@ -21,7 +21,7 @@ import { protectedRoute } from './middleware/auth'
 import { handleSendMessage } from './controllers/messages'
 import messageRoute from './routes/messages'
 import { CreateGroupDto, SendMessageDto, UserCredentialsDto, VerifyTokenDto } from '@chatAIP/dtos'
-import { handleCreateGroup, handleGetAllGroup } from './controllers/groups'
+import { handleCreateGroup, handleGetAllGroup, handleJoinGroup } from './controllers/groups'
 const SocketIO = require('socket.io')
 
 var io: Server
@@ -146,8 +146,16 @@ io.on('connection', (socket: Socket) => {
         console.log('error: ', error)
       })
   })
+  socket.on('join group', (body: GroupClientIdDto) => {
+    protectedRoute(io, socket)
+      .then(() => {
+        handleJoinGroup(io, socket, body)
+      })
+      .catch((error) => {
+        console.log('error: ', error)
+      })
+  })
 })
-
 // TODO: move this to a test file
 /*
 const testClient = async () => {

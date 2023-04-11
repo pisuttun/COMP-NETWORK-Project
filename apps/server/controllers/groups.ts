@@ -1,5 +1,6 @@
-import { CreateGroupDto, GroupInfoDto } from '@chatAIP/dtos'
+import { CreateGroupDto, GroupClientIdDto, GroupInfoDto } from '@chatAIP/dtos'
 import { Server, Socket } from 'socket.io'
+import clientModel from '../database/model/client'
 import groupModel from '../database/model/group'
 import { convertSocketIdToUserId } from '../database/utils/utils'
 
@@ -15,7 +16,13 @@ export const handleCreateGroup = async (io: Server, socket: Socket, body: Create
       groupName,
       clientId: [clientId],
     })
-
+    const client = await clientModel.findByIdAndUpdate(
+      clientId,
+      {
+        $addToSet: { groupId: group._id },
+      },
+      { new: true },
+    )
     //generate result with Dto type
     const receiverResult: GroupInfoDto = {
       groupId: String(group._id),
@@ -61,6 +68,30 @@ export const handleGetAllGroup = async (io: Server, socket: Socket) => {
       result,
     })
     return groups
+  } catch (error) {
+    console.log('error: ', error)
+    return null
+  }
+}
+
+export const handleJoinGroup = async (io: Server, socket: Socket, body: GroupClientIdDto) => {
+  try {
+    const { groupId, clientId } = body
+    const group = await groupModel.findByIdAndUpdate(
+      groupId,
+      {
+        $addToSet: { clientId },
+      },
+      { new: true },
+    )
+    const client = await clientModel.findByIdAndUpdate(
+      clientId,
+      {
+        $addToSet: { groupId },
+      },
+      { new: true },
+    )
+    return group
   } catch (error) {
     console.log('error: ', error)
     return null
