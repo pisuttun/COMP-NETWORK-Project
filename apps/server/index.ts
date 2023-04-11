@@ -7,12 +7,8 @@ import fs from 'fs'
 import cors from 'cors'
 import dotenv from 'dotenv'
 
-import { Types } from 'mongoose'
 import connectDatabase from './database/dbConnect'
-import clientModel from './database/model/client'
-import chatDataModel from './database/model/chatData'
-import groupModel from './database/model/group'
-import { ClientStatus, UpdateClientInfoDto } from '@chatAIP/dtos'
+import { UpdateClientInfoDto } from '@chatAIP/dtos'
 import {
   handleDisconnect,
   handleLogin,
