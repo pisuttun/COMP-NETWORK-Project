@@ -27,7 +27,7 @@ const RegisterPage = () => {
             variant="h5" 
             sx={{ color: theme.palette.common.white, textAlign: 'center' }}>Register</Typography>
           <TextField
-            label="Username"
+            label="username"
             value={username}
             onChange={handleUsernameChange}
             error={usernameError !== ''}
@@ -37,7 +37,7 @@ const RegisterPage = () => {
             }}
           />
           <PasswordTextField
-            label="Password"
+            label="password"
             value={password}
             onChange={handlePasswordChange}
             error={passwordError !== ''}
@@ -46,7 +46,7 @@ const RegisterPage = () => {
               disableUnderline: true, 
             }}
           />
-          <SubmitButton type = "submit">Login</SubmitButton>
+          <SubmitButton type = "submit">Register</SubmitButton>
           <div style={{ 
             display:'flex', 
             justifyContent: 'center',
@@ -61,11 +61,11 @@ const RegisterPage = () => {
                 width: '100%',
               }}
             >
-            do not have an account?
+            already have an account?
             </Typography>
-            <Link href="/register" passHref style={{ color: theme.palette.primary.light}}>
+            <Link href="/" passHref style={{ color: theme.palette.primary.light}}>
               <Typography variant="subtitle1" sx={{ color: theme.palette.primary.light}}>
-                Register
+                Login
               </Typography>
             </Link>
           </div>

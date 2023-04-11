@@ -1,3 +1,4 @@
+import { useSocket } from 'common/context/socketContext'
 import router from 'next/router'
 import { useCallback, useState } from 'react'
 
@@ -6,6 +7,7 @@ const useRegisterForm = () => {
   const [password, setPassword] = useState('')
   const [usernameError, setUsernameError] = useState('')
   const [passwordError, setPasswordError] = useState('')
+  const { socket } = useSocket()
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -15,18 +17,20 @@ const useRegisterForm = () => {
     if (password.trim() === '') {
       setPasswordError('Password is required')
     }
-
-    // try {
-    //   const response = await fetch(`/api/users/${username}`)
-    //   const isUsernameTaken = await response.json()
-    //   if (isUsernameTaken) {
-    //     setUsernameError('This username is already taken')
-    //   } else router.push('/job')
-    // } catch (error) {
-    //   console.error(error)
-    // } finally {
-    //   // setLoading(false)
-    // }
+    try {
+      const body: any = {
+        username: username,
+        password: password,
+      }
+      socket.emit('register', body)
+      socket.on('your id', (data) => {
+        if (!data.isSuccess) {
+          setUsernameError('This username is already taken')
+        } else router.push('/login')
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
