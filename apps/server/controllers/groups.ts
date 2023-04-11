@@ -7,6 +7,7 @@ import { convertSocketIdToUserId } from '../database/utils/utils'
 export const handleCreateGroup = async (io: Server, socket: Socket, body: CreateGroupDto) => {
   try {
     let { groupName, clientId } = body
+    //validate
     const userId = String(await convertSocketIdToUserId(socket.id))
     clientId = clientId ? clientId : userId
     if (clientId !== userId) throw new Error('clientId is not match with userId')
@@ -54,7 +55,9 @@ export const handleCreateGroup = async (io: Server, socket: Socket, body: Create
 export const handleGetAllGroup = async (io: Server, socket: Socket) => {
   try {
     const groups = await groupModel.find()
+
     const cliendId = await convertSocketIdToUserId(socket.id)
+
     const result: GroupInfoDto[] = []
     groups.forEach((group) => {
       const groupInfo: GroupInfoDto = {
@@ -76,7 +79,12 @@ export const handleGetAllGroup = async (io: Server, socket: Socket) => {
 
 export const handleJoinGroup = async (io: Server, socket: Socket, body: GroupClientIdDto) => {
   try {
-    const { groupId, clientId } = body
+    let { groupId, clientId } = body
+    //validate
+    const userId = String(await convertSocketIdToUserId(socket.id))
+    clientId = clientId ? clientId : userId
+    if (clientId !== userId) throw new Error('clientId is not match with userId')
+
     const group = await groupModel.findByIdAndUpdate(
       groupId,
       {
@@ -88,6 +96,35 @@ export const handleJoinGroup = async (io: Server, socket: Socket, body: GroupCli
       clientId,
       {
         $addToSet: { groupId },
+      },
+      { new: true },
+    )
+    return group
+  } catch (error) {
+    console.log('error: ', error)
+    return null
+  }
+}
+
+export const handleLeaveGroup = async (io: Server, socket: Socket, body: GroupClientIdDto) => {
+  try {
+    let { groupId, clientId } = body
+    //validate
+    const userId = String(await convertSocketIdToUserId(socket.id))
+    clientId = clientId ? clientId : userId
+    if (clientId !== userId) throw new Error('clientId is not match with userId')
+
+    const group = await groupModel.findByIdAndUpdate(
+      groupId,
+      {
+        $pull: { clientId },
+      },
+      { new: true },
+    )
+    const client = await clientModel.findByIdAndUpdate(
+      clientId,
+      {
+        $pull: { groupId },
       },
       { new: true },
     )
