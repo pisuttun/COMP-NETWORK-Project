@@ -3,13 +3,14 @@ import Typography from '@mui/material/Typography'
 import { RootContainer, UserContainer, ChatChoiceContainer, IconContainer } from './styled'
 import { LogoutOutlined, KeyboardArrowUpOutlined } from '@mui/icons-material'
 import ChatNameDisplay from 'modules/chat/components/ChatNameDisplay'
+import ChatNameContainer from './components/ChatNameContainer'
+import { ChatNameHolder } from './placeholder'
 
 export default function Sidebar() {
   return (
     <RootContainer>
       <ChatChoiceContainer>
-        <ChatNameDisplay isGroup={false} isOnline={true} name="Ice" />
-        <ChatNameDisplay isGroup={false} isOnline={false} name="Fain" />
+        <ChatNameContainer ChatChoice={ChatNameHolder} />
       </ChatChoiceContainer>
       <UserContainer>
         <ChatNameDisplay isGroup={false} isOnline={true} name="P" />

@@ -11,7 +11,7 @@ export default function ChatNameDisplay(props: ChatNameDisplayProps) {
         flexDirection: 'row',
         alignItems: 'center',
         gap: '10px',
-        height: '7vh',
+        minHeight: '7vh',
       }}
     >
       {!isGroup && <Circle sx={{ fill: isOnline ? '#6DD58C' : '#606060' }} />}

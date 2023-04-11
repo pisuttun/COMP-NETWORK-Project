@@ -7,6 +7,7 @@ export const RootContainer = styled('div')`
   align-items: center;
   background-color: #322036;
   width: 16vw;
+  height: 100%;
   border-bottom: 1px solid black;
 `
 export const ChatChoiceContainer = styled('div')`
@@ -15,6 +16,7 @@ export const ChatChoiceContainer = styled('div')`
   justify-content: flex-start;
   align-items: flex-start;
   width: 100%;
+  height: 100%;
   padding-left: 1.5rem;
 `
 export const UserContainer = styled('div')`
