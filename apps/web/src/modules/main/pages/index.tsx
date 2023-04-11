@@ -5,22 +5,43 @@ import { BoxContainer, RootContainer, SubmitButton } from './styled'
 import TextField from 'common/components/TextField'
 import PasswordTextField from 'common/components/PasswordTextField'
 import Link from 'next/link'
+import useLoginForm from '../hooks/useLoginForm'
 
-export default function MainPage() {
+const MainPage = () => {
+  const {
+    username,
+    password,
+    usernameError,
+    passwordError,
+    handleSubmit,
+    handleUsernameChange,
+    handlePasswordChange,
+  } = useLoginForm();
+
   return(
-    <RootContainer>
+    <RootContainer onSubmit={handleSubmit} >
         <Typography variant="h3" 
           sx={{ color: theme.palette.primary.light, textAlign: 'center' }}>ChatIP</Typography>
         <BoxContainer>
-          <Typography variant="h5" 
+          <Typography 
+            variant="h5" 
             sx={{ color: theme.palette.common.white, textAlign: 'center' }}>Login</Typography>
           <TextField
-            label="username" 
+            label="username"
+            value={username}
+            onChange={handleUsernameChange}
+            error={usernameError !== ''}
+            helperText={usernameError}
             InputProps={{ 
               disableUnderline: true, 
             }}
           />
           <PasswordTextField
+            label="password"
+            value={password}
+            onChange={handlePasswordChange}
+            error={passwordError !== ''}
+            helperText={passwordError}
             InputProps={{ 
               disableUnderline: true, 
             }}
@@ -40,7 +61,7 @@ export default function MainPage() {
                 width: '100%',
               }}
             >
-            do not have an account?
+            does not have an account?
             </Typography>
             <Link href="/register" passHref style={{ color: theme.palette.primary.light}}>
               <Typography variant="subtitle1" sx={{ color: theme.palette.primary.light}}>
@@ -52,3 +73,5 @@ export default function MainPage() {
     </RootContainer>
   )
 }
+          
+export default MainPage
