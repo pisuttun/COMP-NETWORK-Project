@@ -20,15 +20,29 @@ import {
   handleVerify,
   handleLogout,
 } from './controllers/auth'
-import { handleGetAllClient } from './controllers/profile'
+import { handleGetAllClient } from './controllers/profiles'
 import { protectedRoute } from './middleware/auth'
+import { handleSendMessage } from './controllers/messages'
+import messageRoute from './routes/messages'
+import { SendMessageDto, UserCredentialsDto, VerifyTokenDto } from '@chatAIP/dtos'
 const SocketIO = require('socket.io')
 
 var io: Server
 var server: https.Server | http.Server
 dotenv.config()
 const app = express()
+
+// Body parser
+app.use(express.json())
+
+// Enable CORS
 app.use(cors())
+
+//routes
+app.use('/api/messages', messageRoute)
+app.get('/', (req, res) => {
+  res.send('hello from express')
+})
 
 //connect to database
 try {
@@ -51,42 +65,43 @@ if (process.env.NODE_ENV === 'production') {
   server = http.createServer(app)
   io = new Server(server)
 }
+console.log('server', typeof server)
 
 const users: string[] = []
 io.on('connection', (socket: Socket) => {
   console.log('new socket connection: ', socket.id)
   //verify the token
-  socket.on('verify token', (body: any) => {
+  socket.on('verify token', (body: VerifyTokenDto) => {
     const token = body.token
     handleVerify(io, socket, token)
   })
 
   //auth routes
-  socket.on('register', (body: any) => {
+  socket.on('register', (body: UserCredentialsDto) => {
     handleRegister(io, socket, body)
   })
-  socket.on('login', (body: any) => {
+  socket.on('login', (body: UserCredentialsDto) => {
     handleLogin(io, socket, body)
   })
   socket.on('disconnect', () => {
     // disconnect is socket.io disconnect event
     handleDisconnect(io, socket)
   })
-  socket.on('logout', async (body: any) => {
-    // logout is custom user client logout event (token)
-    const token = body.token
-    protectedRoute(io, socket, token)
+  socket.on('logout', async () => {
+    // logout is custom user client logout event
+    protectedRoute(io, socket)
       .then((result) => {
-        console.log('before logout result: ', result)
-        handleLogout(io, socket, result.userId)
+        //console.log('before logout result: ', result)
+        handleLogout(io, socket, String(result._id))
       })
       .catch((error) => {
         console.log('error: ', error)
       })
   })
-  socket.on('get all client', async (body: any) => {
-    const token = body.token
-    protectedRoute(io, socket, token)
+
+  //profile routes
+  socket.on('get all client', async () => {
+    protectedRoute(io, socket)
       .then(() => {
         handleGetAllClient(io, socket)
       })
@@ -94,10 +109,16 @@ io.on('connection', (socket: Socket) => {
         console.log('error: ', error)
       })
   })
-  //chat routes
-  socket.on('send message', (body: any) => {
-    console.log('receive: ', body)
-    io.emit('message', body)
+
+  //message routes
+  socket.on('send message', (body: SendMessageDto) => {
+    protectedRoute(io, socket)
+      .then(() => {
+        handleSendMessage(io, socket, body)
+      })
+      .catch((error) => {
+        console.log('error: ', error)
+      })
   })
 })
 

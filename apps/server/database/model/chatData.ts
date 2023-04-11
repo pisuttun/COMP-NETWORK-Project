@@ -13,11 +13,15 @@ const chatDataSchema = new Schema<IChatData>(
     },
     receiverId: {
       type: Schema.Types.ObjectId,
-      required: true,
+      required: false,
     },
     groupId: {
       type: Schema.Types.ObjectId,
-      required: true,
+      required: false,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
     },
   },
   {
