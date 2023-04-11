@@ -12,7 +12,7 @@ import connectDatabase from './database/dbConnect'
 import clientModel from './database/model/client'
 import chatDataModel from './database/model/chatData'
 import groupModel from './database/model/group'
-import { ClientStatus } from '@chatAIP/dtos'
+import { ClientStatus, UpdateClientInfoDto } from '@chatAIP/dtos'
 import {
   handleDisconnect,
   handleLogin,
@@ -20,7 +20,7 @@ import {
   handleVerify,
   handleLogout,
 } from './controllers/auth'
-import { handleGetAllClient } from './controllers/profiles'
+import { handleGetAllClient, handleUpdateClientInfo } from './controllers/profiles'
 import { protectedRoute } from './middleware/auth'
 import { handleSendMessage } from './controllers/messages'
 import messageRoute from './routes/messages'
@@ -100,6 +100,15 @@ io.on('connection', (socket: Socket) => {
   })
 
   //profile routes
+  socket.on('change client info', async (body: UpdateClientInfoDto) => {
+    protectedRoute(io, socket)
+      .then(() => {
+        handleUpdateClientInfo(io, socket, body)
+      })
+      .catch((error) => {
+        console.log('error: ', error)
+      })
+  })
   socket.on('get all client', async () => {
     protectedRoute(io, socket)
       .then(() => {

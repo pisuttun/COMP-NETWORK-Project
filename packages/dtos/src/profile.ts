@@ -8,3 +8,9 @@ export interface ClientInfoDto {
   status: ClientStatus
   nickname: String
 }
+
+export interface UpdateClientInfoDto {
+  senderId?: String
+  status?: ClientStatus
+  nickname?: String
+}
