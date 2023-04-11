@@ -3,6 +3,8 @@ import { io } from 'socket.io-client'
 import { ISocketContext } from './types'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { CircularProgress } from '@mui/material'
+import { VerifyStatusDto, VerifyTokenDto } from '@chatAIP/dtos'
 
 const SocketContext = createContext<ISocketContext>({} as ISocketContext)
 
@@ -15,21 +17,31 @@ export const SocketProvider = ({ children }: React.PropsWithChildren<{}>) => {
 
   const [loading, setLoading] = useState(false)
 
-  socket.on('connect', () => {
+  useEffect(() => {
+    setLoading(true)
     if (typeof window !== 'undefined') {
-      //setLoading(true)
-      socket.emit('verify token', {
+      const body: VerifyTokenDto = {
         token: localStorage.getItem('token') || '',
-      })
-    }
-    socket.on('verify status', (data: { isSuccess: boolean }) => {
-      console.log(data)
-      if (data.isSuccess === false && router.pathname !== '/') {
-        router.replace('/')
       }
-      setLoading(false)
-    })
+      socket.emit('verify token', body)
+    }
+  }, [])
+
+  socket.on('connect', () => {})
+
+  socket.on('verify status', (data: VerifyStatusDto) => {
+    setLoading(false)
+    if (data.isSuccess === false && router.pathname === '/chat') {
+      router.replace('/')
+    }
   })
 
-  return <SocketContext.Provider value={{ socket }}>{children}</SocketContext.Provider>
+  return (
+    <SocketContext.Provider value={{ socket }}>
+      {children}
+      {loading && (
+        <CircularProgress sx={{ position: 'fixed', zIndex: 99, top: '50%', left: '50%' }} />
+      )}
+    </SocketContext.Provider>
+  )
 }
