@@ -8,18 +8,28 @@ import {
   ResGetMessageDto,
   ReqGetMessageDto,
 } from '@chatAIP/dtos'
+import { Schema } from 'mongoose'
 
 //TODO: add dto
 export const handleSendMessage = async (io: Server, socket: Socket, body: SendMessageDto) => {
-  let { text, senderId, receiverId, groupId } = body
-  const senderClient = await clientModel.find({ socketId: socket.id })
-  senderId = senderId ? senderId : String(senderClient[0]._id)
-  receiverId = receiverId ? receiverId : undefined
-  groupId = groupId ? groupId : undefined
+  try {
+    let { text, senderId, receiverId, groupId } = body
+    let senderClient = (await clientModel.find({ socketId: socket.id }))[0]
+    if (!senderClient) throw new Error('client not found')
 
-  //send to receiver
-  if (receiverId) {
-    console.log('receive: ', body)
+    senderId = senderId ? senderId : String(senderClient._id)
+    receiverId = receiverId ? receiverId : undefined
+    groupId = groupId ? groupId : undefined
+
+    if (groupId) {
+      let clientInGroup = false
+      senderClient.groupId.forEach((eachGroupId) => {
+        if (String(eachGroupId) === groupId) {
+          clientInGroup = true
+        }
+      })
+      if (!clientInGroup) throw new Error('client is not in this group')
+    }
     //save to database
     const newChatData = await chatData.create({
       text,
@@ -27,35 +37,46 @@ export const handleSendMessage = async (io: Server, socket: Socket, body: SendMe
       receiverId,
       groupId,
     })
-    const socketIdObject = (await clientModel.findById(receiverId).select('socketId')) || {
-      socketId: '',
-    }
-    const socketId = socketIdObject.socketId
+    //generate result with Dto type
     const result: NewMessageDto = {
       messageId: String(newChatData._id),
       text,
       senderId,
-      senderNickname: senderClient[0].nickname,
+      senderNickname: senderClient.nickname,
       createdAt: newChatData.createdAt,
     }
-    console.log('socketId: ', socketId)
-    io.to(socketId).emit('new message', {
-      result,
-    })
+    // send to receiver
+    if (receiverId) {
+      console.log('receive: ', body)
+      const socketIdObject = (await clientModel.findById(receiverId).select('socketId')) || {
+        socketId: '',
+      }
+      const socketId = socketIdObject.socketId
+
+      console.log('socketId: ', socketId)
+      io.to(socketId).emit('new message', result)
+    }
+    // send to group
+    if (groupId) {
+      console.log('receive: ', body)
+      // TODO: or change to socket.join(groupId) instead? , socket.on(groupId + ' message") is kinda weird
+      io.emit(groupId + ' message', result)
+    }
+  } catch (error) {
+    console.log('error: ', error)
+    return null
   }
-  //TODO: send to group
 }
 
 export const handleGetAllMessage = async (req: any, res: any) => {
   console.log('get all chat data')
   console.log('req : ', req.body)
   const reqBody: ReqGetMessageDto = req.body
-  const { lastedMessageId, senderId, receiverId, groupId } = reqBody
-  //  const chatDataList = await chatData.aggregate([{ $match: { senderId: senderId } }])
+  const { latestMessageId, senderId, receiverId, groupId } = reqBody
 
   let chatDataQuery: any = {}
-  if (lastedMessageId) {
-    chatDataQuery = { _id: { $lte: lastedMessageId } }
+  if (latestMessageId) {
+    chatDataQuery = { _id: { $lte: latestMessageId } }
   }
   if (senderId) {
     chatDataQuery = {

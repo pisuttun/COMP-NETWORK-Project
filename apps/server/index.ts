@@ -8,7 +8,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 
 import connectDatabase from './database/dbConnect'
-import { UpdateClientInfoDto } from '@chatAIP/dtos'
+import { GroupClientIdDto, UpdateClientInfoDto } from '@chatAIP/dtos'
 import {
   handleDisconnect,
   handleLogin,
@@ -20,7 +20,13 @@ import { handleGetAllClient, handleUpdateClientInfo } from './controllers/profil
 import { protectedRoute } from './middleware/auth'
 import { handleSendMessage } from './controllers/messages'
 import messageRoute from './routes/messages'
-import { SendMessageDto, UserCredentialsDto, VerifyTokenDto } from '@chatAIP/dtos'
+import { CreateGroupDto, SendMessageDto, UserCredentialsDto, VerifyTokenDto } from '@chatAIP/dtos'
+import {
+  handleCreateGroup,
+  handleGetAllGroup,
+  handleJoinGroup,
+  handleLeaveGroup,
+} from './controllers/groups'
 const SocketIO = require('socket.io')
 
 var io: Server
@@ -125,8 +131,45 @@ io.on('connection', (socket: Socket) => {
         console.log('error: ', error)
       })
   })
-})
 
+  //group routes
+  socket.on('create group', (body: CreateGroupDto) => {
+    protectedRoute(io, socket)
+      .then(() => {
+        handleCreateGroup(io, socket, body)
+      })
+      .catch((error) => {
+        console.log('error: ', error)
+      })
+  })
+  socket.on('get all group', () => {
+    protectedRoute(io, socket)
+      .then(() => {
+        handleGetAllGroup(io, socket)
+      })
+      .catch((error) => {
+        console.log('error: ', error)
+      })
+  })
+  socket.on('join group', (body: GroupClientIdDto) => {
+    protectedRoute(io, socket)
+      .then(() => {
+        handleJoinGroup(io, socket, body)
+      })
+      .catch((error) => {
+        console.log('error: ', error)
+      })
+  })
+  socket.on('leave group', (body: GroupClientIdDto) => {
+    protectedRoute(io, socket)
+      .then(() => {
+        handleLeaveGroup(io, socket, body)
+      })
+      .catch((error) => {
+        console.log('error: ', error)
+      })
+  })
+})
 // TODO: move this to a test file
 /*
 const testClient = async () => {
