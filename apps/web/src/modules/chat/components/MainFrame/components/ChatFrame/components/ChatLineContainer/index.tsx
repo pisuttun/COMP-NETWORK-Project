@@ -6,16 +6,14 @@ import { ChatLineContainerProps } from './types'
 export default function ChatLineContainer(props: ChatLineContainerProps) { 
   const { Chat,Loader } = props
   const scrollRef = useRef<HTMLDivElement | null>(null)
-  const [isFirstLoad, setIsFirstLoad] = useState<boolean>(true)
 
-
+  // TODO: move to hooks file when connect with API
   const handleScroll = (e: React.UIEvent<HTMLDivElement> ) => {
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget
     const isAtTop = ( (scrollHeight + scrollTop) - clientHeight < 2)
     console.log(clientHeight, scrollHeight , scrollTop)
     if ( isAtTop ) {
       Loader()
-      // Perform any action needed when the scroll bar is at the top
     }
   }
  
