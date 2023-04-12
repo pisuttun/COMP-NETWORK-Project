@@ -54,17 +54,13 @@ export const handleSendMessage = async (io: Server, socket: Socket, body: SendMe
       const socketId = socketIdObject.socketId
 
       console.log('socketId: ', socketId)
-      io.to(socketId).emit('new message', {
-        ...result,
-      })
+      io.to(socketId).emit('new message', result)
     }
     // send to group
     if (groupId) {
       console.log('receive: ', body)
       // TODO: or change to socket.join(groupId) instead? , socket.on(groupId + ' message") is kinda weird
-      io.emit(groupId + ' message', {
-        ...result,
-      })
+      io.emit(groupId + ' message', result)
     }
   } catch (error) {
     console.log('error: ', error)

@@ -38,13 +38,9 @@ export const handleCreateGroup = async (io: Server, socket: Socket, body: Create
     }
 
     //send to receiver (include creator)
-    io.emit('new group', {
-      receiverResult,
-    })
+    io.emit('new group', receiverResult)
     //send to creator
-    io.to(socketId).emit('new group', {
-      creatorResult,
-    })
+    io.to(socketId).emit('new group', creatorResult)
 
     return group
   } catch (error) {
@@ -68,9 +64,7 @@ export const handleGetAllGroup = async (io: Server, socket: Socket) => {
       }
       result.push(groupInfo)
     })
-    io.to(socket.id).emit('all group', {
-      result,
-    })
+    io.to(socket.id).emit('all group', result)
     return groups
   } catch (error) {
     console.log('error: ', error)
