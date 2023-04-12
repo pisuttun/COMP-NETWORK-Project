@@ -4,7 +4,7 @@ import { RootContainer } from './styled'
 import { ChatLineContainerProps } from './types'
 
 export default function ChatLineContainer(props: ChatLineContainerProps) { 
-  const { Chat,Loader } = props
+  const { Chat,Loader, curRow } = props
   const scrollRef = useRef<HTMLDivElement | null>(null)
 
   // TODO: move to hooks file when connect with API
@@ -19,7 +19,7 @@ export default function ChatLineContainer(props: ChatLineContainerProps) {
  
   
   return (
-    <RootContainer ref={scrollRef} onScroll={handleScroll}>
+    <RootContainer ref={scrollRef} onScroll={handleScroll} sx={{height: `calc(75vh - ${curRow*3}vh)`}}>
       {Chat &&
         Chat.map((item, index) => {
           return <ChatLine sender={item.sender} time={item.time} message={item.message} />

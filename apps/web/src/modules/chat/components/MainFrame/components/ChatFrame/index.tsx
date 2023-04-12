@@ -5,24 +5,23 @@ import ChatLineContainer from './components/ChatLineContainer'
 import useChatData from './hooks/useChatData'
 
 export default function ChatFrame() {
-  const { value, isOverflow, textFieldRef } = useTextFieldControl()
+  const { value, isOverflow, textFieldRef,row } = useTextFieldControl()
   const { fetchData, chat } = useChatData()
 
   return (
     <RootContainer>
       <ChatBox>
-        <ChatLineContainer Chat={chat} Loader={fetchData} />
+        <ChatLineContainer Chat={chat} Loader={fetchData} curRow={row}/>
       </ChatBox>
       <TextInput
         inputRef={textFieldRef}
-        placeholder="Message Prias"
         multiline
         maxRows={4}
         value={value}
         onInput={() => {}}
         onChange={(e) => {
           if (textFieldRef.current) {
-            isOverflow(textFieldRef.current, e.target.value)
+            isOverflow(e.target.value)
           }
         }}
       />
