@@ -11,7 +11,6 @@ const useTextFieldControl = () => {
     }
     if (inputElement.scrollHeight <= line) {
       setValue(e)
-    } else {
     }
   }
 
