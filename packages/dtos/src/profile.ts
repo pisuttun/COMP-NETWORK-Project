@@ -4,13 +4,13 @@ export enum ClientStatus {
 }
 
 export interface ClientInfoDto {
-  userId: String
+  userId: string
   status: ClientStatus
-  nickname: String
+  nickname: string
 }
 
 export interface UpdateClientInfoDto {
-  senderId?: String
+  senderId?: string
   status?: ClientStatus
-  nickname?: String
+  nickname?: string
 }

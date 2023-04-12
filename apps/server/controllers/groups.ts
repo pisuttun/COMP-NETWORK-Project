@@ -3,6 +3,7 @@ import { Server, Socket } from 'socket.io'
 import clientModel from '../database/model/client'
 import groupModel from '../database/model/group'
 import { convertSocketIdToUserId } from '../database/utils/utils'
+import { Schema } from 'mongoose'
 
 export const handleCreateGroup = async (io: Server, socket: Socket, body: CreateGroupDto) => {
   try {
@@ -110,9 +111,18 @@ export const handleLeaveGroup = async (io: Server, socket: Socket, body: GroupCl
   try {
     let { groupId, clientId } = body
     //validate
-    const userId = String(await convertSocketIdToUserId(socket.id))
-    clientId = clientId ? clientId : userId
-    if (clientId !== userId) throw new Error('clientId is not match with userId')
+    const client = await clientModel.findOne({ socketId: socket.id })
+    if (!client) throw new Error('client not found')
+    clientId = clientId ? clientId : String(client._id)
+    let clientInGroup = false
+    client.groupId.forEach((eachGroupId) => {
+      if (String(eachGroupId) === groupId) {
+        clientInGroup = true
+      }
+    })
+    if (!clientInGroup) throw new Error('client is not in this group')
+
+    if (clientId !== String(client._id)) throw new Error('clientId is not match with userId')
 
     const group = await groupModel.findByIdAndUpdate(
       groupId,
@@ -121,7 +131,7 @@ export const handleLeaveGroup = async (io: Server, socket: Socket, body: GroupCl
       },
       { new: true },
     )
-    const client = await clientModel.findByIdAndUpdate(
+    const clientUpdated = await clientModel.findByIdAndUpdate(
       clientId,
       {
         $pull: { groupId },

@@ -1,15 +1,15 @@
 export interface CreateGroupDto {
-  groupName: String
-  clientId: String
+  groupName: string
+  clientId: string
 }
 
 export interface GroupInfoDto {
-  groupId: String
-  groupName: String
+  groupId: string
+  groupName: string
   isJoined: Boolean
 }
 
 export interface GroupClientIdDto {
-  groupId: String
-  clientId: String
+  groupId: string
+  clientId: string
 }
