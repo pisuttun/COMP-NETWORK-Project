@@ -27,6 +27,6 @@ export const RootContainer = styled('div')`
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background-color: #412846; // Adjust thumb color on hover as desired
+    background-color: #d0b1f8; // Adjust thumb color on hover as desired
   }
 `
