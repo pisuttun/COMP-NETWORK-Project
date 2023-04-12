@@ -7,7 +7,7 @@ export const RootContainer = styled('div')`
   justify-content: center;
   align-items: flex-start;
   width: 100%;
-  min-height: 7vh;
+  min-height: 5vh;
 `
 export const SubContainer = styled('div')`
   display: flex;

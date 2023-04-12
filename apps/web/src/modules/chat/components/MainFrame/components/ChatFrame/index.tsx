@@ -15,6 +15,7 @@ export default function ChatFrame() {
       </ChatBox>
       <TextInput
         inputRef={textFieldRef}
+        placeholder="Message Prias"
         multiline
         maxRows={4}
         value={value}

@@ -7,14 +7,14 @@ export default function ChatLine(props: ChatLineProps) {
   return (
     <RootContainer>
       <SubContainer>
-        <Typography variant="subtitle1" sx={{ color: '#D0B1F8' }}>
+        <Typography variant="subtitle2" sx={{ color: '#D0B1F8' }}>
           {sender}
         </Typography>
         <Typography variant="caption" sx={{ color: '#D0B1F8', paddingLeft: '6px' }}>
           {time}
         </Typography>
       </SubContainer>
-      <Typography variant="h6" sx={{ color: '#EFE0FF' }}>
+      <Typography variant="subtitle1" sx={{ color: '#EFE0FF' }}>
         {message}
       </Typography>
     </RootContainer>
