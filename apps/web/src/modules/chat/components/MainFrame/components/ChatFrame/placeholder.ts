@@ -11,7 +11,7 @@ export const chatLog: ChatLineProps[][] = [
     {
       sender: 'Alice',
       time: '10:06 AM',
-      message: "It's a web application for managing tasks and deadlines.",
+      message: "It's a web application for managing tasks and deadlines. Test Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long Long",
     },
     {
       sender: 'Bob',
