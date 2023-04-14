@@ -1,11 +1,30 @@
 import React from 'react'
-import Typography from '@mui/material/Typography'
-import { RootContainer } from './styled'
+import { ChatBox, RootContainer, TextInput } from './styled'
+import useTextFieldControl from './hooks/useTextFieldControl'
+import ChatLineContainer from './components/ChatLineContainer'
+import useChatData from './hooks/useChatData'
 
 export default function ChatFrame() {
+  const { value, isOverflow, textFieldRef,row } = useTextFieldControl()
+  const { fetchData, chat } = useChatData()
+
   return (
     <RootContainer>
-      <Typography sx={{ color: 'white' }}>ChatBox</Typography>
+      <ChatBox>
+        <ChatLineContainer Chat={chat} Loader={fetchData} curRow={row}/>
+      </ChatBox>
+      <TextInput
+        inputRef={textFieldRef}
+        multiline
+        maxRows={4}
+        value={value}
+        onInput={() => {}}
+        onChange={(e) => {
+          if (textFieldRef.current) {
+            isOverflow(e.target.value)
+          }
+        }}
+      />
     </RootContainer>
   )
 }
