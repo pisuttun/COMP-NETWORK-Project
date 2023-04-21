@@ -10,4 +10,6 @@ export interface MainFrameProps {
   text: string
   setText: Dispatch<SetStateAction<string>>
   sendMessage: () => void
+  focus: string
+  setFocus: Dispatch<SetStateAction<string>>
 }

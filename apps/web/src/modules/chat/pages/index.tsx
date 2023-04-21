@@ -29,6 +29,8 @@ export default function ChatPage() {
           text={text}
           setText={setText}
           sendMessage={sendMessage}
+          focus={focus}
+          setFocus={setFocus}
         />
       </Grid>
     </FullScreenGrid>
