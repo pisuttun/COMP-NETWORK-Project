@@ -2,7 +2,6 @@ import React from 'react'
 import { ChatBox, RootContainer, TextInput } from './styled'
 import useTextFieldControl from './hooks/useTextFieldControl'
 import ChatLineContainer from './components/ChatLineContainer'
-import useChatData from './hooks/useChatData'
 import { ChatFrameProps } from './types'
 
 export default function ChatFrame(props: ChatFrameProps) {
