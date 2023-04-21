@@ -1,5 +1,7 @@
+import { ClientStatus } from '@chatAIP/dtos'
+
 export interface ChatNameDisplayProps {
   isGroup: boolean
-  isOnline?: boolean
+  status: ClientStatus
   name: string
 }

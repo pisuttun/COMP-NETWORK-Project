@@ -6,8 +6,8 @@ export default function ChatNameContainer(props: ChatNameContainerProps) {
   const { ChatChoice } = props
   return (
     <RootContainer>
-      {ChatChoice.map((item, index) => {
-        return <ChatNameDisplay isGroup={false} name={item.nickname} />
+      {ChatChoice?.map((item, index) => {
+        return <ChatNameDisplay isGroup={false} name={item.nickname} status={item.status} />
       })}
     </RootContainer>
   )

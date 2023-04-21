@@ -1,8 +1,10 @@
+import { ClientStatus } from '@chatAIP/dtos'
+
 export interface ChatNameContainerProps {
-  ChatChoice: NameDisplay[]
+  ChatChoice?: NameDisplay[]
 }
 export interface NameDisplay {
-  userId: number
-  status: string
+  userId: string
+  status: ClientStatus
   nickname: string
 }
