@@ -1,15 +1,18 @@
-import React, { useEffect } from 'react'
-import Typography from '@mui/material/Typography'
+import React from 'react'
 import Topbar from '../components/Topbar'
 import MainFrame from '../components/MainFrame'
 import { FullScreenGrid } from './styled'
 import { Grid } from '@mui/material'
 import useAuth from './hooks/useAuth'
 import useChatInfo from './hooks/useChatInfo'
+import useShareVariable from './hooks/useShareVariable'
+import useMessageInfo from './hooks/useMessageInfo'
 
 export default function ChatPage() {
+  const { focus, setFocus } = useShareVariable()
   const { logout } = useAuth()
-  const { groupList, clientList, isDM, setIsDM } = useChatInfo()
+  const { groupList, clientList, isDM, setIsDM } = useChatInfo({ focus, setFocus })
+  const { messageList, text, setText, sendMessage } = useMessageInfo({ focus, setFocus })
 
   return (
     <FullScreenGrid container direction="column" justifyContent="flex-start" alignItems="stretch">
@@ -17,7 +20,16 @@ export default function ChatPage() {
         <Topbar isDM={isDM} setIsDM={setIsDM} />
       </Grid>
       <Grid item container xs>
-        <MainFrame groupList={groupList} clientList={clientList} logout={logout} isDM={isDM} />
+        <MainFrame
+          groupList={groupList}
+          clientList={clientList}
+          logout={logout}
+          isDM={isDM}
+          messageList={messageList}
+          text={text}
+          setText={setText}
+          sendMessage={sendMessage}
+        />
       </Grid>
     </FullScreenGrid>
   )

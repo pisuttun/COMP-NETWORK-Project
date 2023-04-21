@@ -32,6 +32,7 @@ const useLoginForm = () => {
             displaySnackbar('Username or Password is wrong', 'error')
         } else router.push('/chat')
         localStorage.setItem('token', data.token)
+        localStorage.setItem('ID', data.userId)
       })
     } catch (error) {
       console.log(error)

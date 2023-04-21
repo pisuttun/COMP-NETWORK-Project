@@ -1,19 +1,22 @@
 import { useSocket } from 'common/context/socketContext'
 import { useCallback, useEffect, useState } from 'react'
-import { ClientInfoDto, CreateGroupDto, GroupInfoDto, NewMessageDto } from '@chatAIP/dtos'
+import { ClientInfoDto, CreateGroupDto, GroupInfoDto } from '@chatAIP/dtos'
+import { useChatInfoParams } from './types'
 
-const useChatInfo = () => {
+const useChatInfo = (params: useChatInfoParams) => {
+  const { focus, setFocus } = params
   const { socket } = useSocket()
   const [groupList, setGroupList] = useState<GroupInfoDto[]>()
   const [clientList, setClientList] = useState<ClientInfoDto[]>()
-  const [messageList, setMessageList] = useState<NewMessageDto[]>()
   const [isDM, setIsDM] = useState(true)
-
   const getAllGroup = useCallback(async () => {
     try {
       socket.emit('get all group')
-      socket.on('all group', (data) => {
+      socket.on('all group', (data: GroupInfoDto[]) => {
         setGroupList(data)
+        if (data.length !== 0) {
+          setFocus(data[0].groupId)
+        }
       })
       socket.on('new group', (data) => {
         setGroupList((prev) => ({
@@ -24,7 +27,7 @@ const useChatInfo = () => {
     } catch (err) {
       console.log(err)
     }
-  }, [socket])
+  }, [setFocus, socket])
 
   const createNewGroup = async () => {
     try {
@@ -65,13 +68,16 @@ const useChatInfo = () => {
   const getAllClient = useCallback(async () => {
     try {
       socket.emit('get all client')
-      socket.on('all client', (data) => {
+      socket.on('all client', (data: ClientInfoDto[]) => {
         setClientList(data)
+        if (data.length !== 0) {
+          setFocus(data[0].userId)
+        }
       })
     } catch (err) {
       console.log(err)
     }
-  }, [socket])
+  }, [setFocus, socket])
 
   useEffect(() => {
     if (isDM) {
@@ -81,6 +87,6 @@ const useChatInfo = () => {
     }
   }, [getAllClient, getAllGroup, isDM])
 
-  return { groupList, getAllClient, clientList, isDM, setIsDM, getAllGroup }
+  return { groupList, getAllClient, clientList, isDM, setIsDM, getAllGroup, focus }
 }
 export default useChatInfo

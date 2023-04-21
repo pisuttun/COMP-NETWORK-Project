@@ -1,5 +1,5 @@
 export interface ChatLineProps {
   sender: string
-  time: string
+  time: Date
   message: string
 }
