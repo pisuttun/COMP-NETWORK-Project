@@ -16,6 +16,7 @@ export default function MainFrame(props: MainFrameProps) {
     sendMessage,
     focus,
     setFocus,
+    getMessage,
   } = props
   return (
     <RootContainer>
@@ -32,6 +33,7 @@ export default function MainFrame(props: MainFrameProps) {
         text={text}
         setText={setText}
         sendMessage={sendMessage}
+        getMessage={getMessage}
       />
     </RootContainer>
   )

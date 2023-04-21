@@ -6,4 +6,5 @@ export interface ChatFrameProps {
   text: string
   setText: Dispatch<SetStateAction<string>>
   sendMessage: () => void
+  getMessage: () => void
 }

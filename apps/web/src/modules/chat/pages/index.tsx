@@ -12,7 +12,10 @@ export default function ChatPage() {
   const { focus, setFocus } = useShareVariable()
   const { logout } = useAuth()
   const { groupList, clientList, isDM, setIsDM } = useChatInfo({ focus, setFocus })
-  const { messageList, text, setText, sendMessage } = useMessageInfo({ focus, setFocus })
+  const { messageList, text, setText, sendMessage, getMessage } = useMessageInfo({
+    focus,
+    setFocus,
+  })
 
   return (
     <FullScreenGrid container direction="column" justifyContent="flex-start" alignItems="stretch">
@@ -31,6 +34,7 @@ export default function ChatPage() {
           sendMessage={sendMessage}
           focus={focus}
           setFocus={setFocus}
+          getMessage={getMessage}
         />
       </Grid>
     </FullScreenGrid>

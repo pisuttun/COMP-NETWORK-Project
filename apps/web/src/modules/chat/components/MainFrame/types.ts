@@ -12,4 +12,5 @@ export interface MainFrameProps {
   sendMessage: () => void
   focus: string
   setFocus: Dispatch<SetStateAction<string>>
+  getMessage: () => Promise<void>
 }

@@ -6,14 +6,13 @@ import useChatData from './hooks/useChatData'
 import { ChatFrameProps } from './types'
 
 export default function ChatFrame(props: ChatFrameProps) {
-  const { messageList, text, setText, sendMessage } = props
+  const { messageList, text, setText, sendMessage, getMessage } = props
   const { isOverflow, textFieldRef, row } = useTextFieldControl(text, setText)
-  const { fetchData } = useChatData()
 
   return (
     <RootContainer>
       <ChatBox>
-        <ChatLineContainer Chat={messageList} Loader={fetchData} curRow={row} />
+        <ChatLineContainer Chat={messageList} Loader={getMessage} curRow={row} />
       </ChatBox>
       <TextInput
         inputRef={textFieldRef}
