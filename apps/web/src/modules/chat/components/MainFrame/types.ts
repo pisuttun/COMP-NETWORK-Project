@@ -1,6 +1,8 @@
-import { ClientInfoDto } from '@chatAIP/dtos'
+import { ClientInfoDto, GroupInfoDto } from '@chatAIP/dtos'
 
 export interface MainFrameProps {
-  ClientList?: ClientInfoDto[]
+  clientList?: ClientInfoDto[]
   logout: () => void
+  isDM: boolean
+  groupList?: GroupInfoDto[]
 }

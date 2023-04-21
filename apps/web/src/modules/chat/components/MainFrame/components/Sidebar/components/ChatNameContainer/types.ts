@@ -1,7 +1,9 @@
-import { ClientStatus } from '@chatAIP/dtos'
+import { ClientStatus, GroupInfoDto } from '@chatAIP/dtos'
 
 export interface ChatNameContainerProps {
-  ChatChoice?: NameDisplay[]
+  chatChoice?: NameDisplay[]
+  groupList?: GroupInfoDto[]
+  isDM: boolean
 }
 export interface NameDisplay {
   userId: string

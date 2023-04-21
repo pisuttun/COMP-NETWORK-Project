@@ -28,6 +28,7 @@ const useAuth = () => {
   const logout = () => {
     try {
       socket.emit('logout')
+      localStorage.clear()
       router.replace('/')
     } catch (err) {
       console.log(err)

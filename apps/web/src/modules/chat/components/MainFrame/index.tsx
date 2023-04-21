@@ -5,10 +5,10 @@ import ChatFrame from './components/ChatFrame'
 import { MainFrameProps } from './types'
 
 export default function MainFrame(props: MainFrameProps) {
-  const { ClientList, logout } = props
+  const { groupList, clientList, logout, isDM } = props
   return (
     <RootContainer>
-      <Sidebar ClientList={ClientList} logout={logout} />
+      <Sidebar groupList={groupList} clientList={clientList} logout={logout} isDM={isDM} />
       <ChatFrame />
     </RootContainer>
   )

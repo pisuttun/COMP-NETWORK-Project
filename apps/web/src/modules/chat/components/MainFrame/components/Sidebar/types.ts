@@ -1,6 +1,8 @@
-import { ClientInfoDto } from '@chatAIP/dtos'
+import { ClientInfoDto, GroupInfoDto } from '@chatAIP/dtos'
 
 export interface SidebarProps {
-  ClientList?: ClientInfoDto[]
+  clientList?: ClientInfoDto[]
+  groupList?: GroupInfoDto[]
   logout: () => void
+  isDM: boolean
 }

@@ -2,6 +2,6 @@ import { ClientStatus } from '@chatAIP/dtos'
 
 export interface ChatNameDisplayProps {
   isGroup: boolean
-  status: ClientStatus
+  status?: ClientStatus
   name: string
 }

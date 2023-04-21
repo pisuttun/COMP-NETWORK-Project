@@ -1,5 +1,5 @@
 import { useSocket } from 'common/context/socketContext'
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { ClientInfoDto, CreateGroupDto, GroupInfoDto, NewMessageDto } from '@chatAIP/dtos'
 
 const useChatInfo = () => {
@@ -7,8 +7,9 @@ const useChatInfo = () => {
   const [groupList, setGroupList] = useState<GroupInfoDto[]>()
   const [clientList, setClientList] = useState<ClientInfoDto[]>()
   const [messageList, setMessageList] = useState<NewMessageDto[]>()
+  const [isDM, setIsDM] = useState(true)
 
-  const getAllGroup = async () => {
+  const getAllGroup = useCallback(async () => {
     try {
       socket.emit('get all group')
       socket.on('all group', (data) => {
@@ -23,7 +24,7 @@ const useChatInfo = () => {
     } catch (err) {
       console.log(err)
     }
-  }
+  }, [socket])
 
   const createNewGroup = async () => {
     try {
@@ -61,7 +62,7 @@ const useChatInfo = () => {
     }
   }
 
-  const getAllClient = async () => {
+  const getAllClient = useCallback(async () => {
     try {
       socket.emit('get all client')
       socket.on('all client', (data) => {
@@ -70,8 +71,16 @@ const useChatInfo = () => {
     } catch (err) {
       console.log(err)
     }
-  }
+  }, [socket])
 
-  return { groupList, getAllClient, clientList }
+  useEffect(() => {
+    if (isDM) {
+      getAllClient()
+    } else {
+      getAllGroup()
+    }
+  }, [getAllClient, getAllGroup, isDM])
+
+  return { groupList, getAllClient, clientList, isDM, setIsDM, getAllGroup }
 }
 export default useChatInfo

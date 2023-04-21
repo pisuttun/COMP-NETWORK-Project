@@ -7,11 +7,11 @@ import { SidebarProps } from './types'
 import { ClientStatus } from '@chatAIP/dtos'
 
 export default function Sidebar(props: SidebarProps) {
-  const { ClientList, logout } = props
+  const { groupList, clientList, logout, isDM } = props
   return (
     <RootContainer>
       <ChatChoiceContainer>
-        <ChatNameContainer ChatChoice={ClientList} />
+        <ChatNameContainer isDM={isDM} chatChoice={clientList} groupList={groupList} />
       </ChatChoiceContainer>
       <UserContainer>
         <ChatNameDisplay isGroup={false} status={ClientStatus.AVAILABLE} name="P" />
