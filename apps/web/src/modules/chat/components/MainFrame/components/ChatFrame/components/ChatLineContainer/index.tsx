@@ -17,6 +17,8 @@ export default function ChatLineContainer(props: ChatLineContainerProps) {
     }
   }
 
+  console.log(Chat)
+
   return (
     <RootContainer
       ref={scrollRef}

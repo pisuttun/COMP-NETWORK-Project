@@ -9,7 +9,7 @@ const useMessageInfo = (params: useMessageInfoParams) => {
   const { displaySnackbar } = useSnackbar()
 
   const { socket } = useSocket()
-  const [messageList, setMessageList] = useState<NewMessageDto[]>()
+  const [messageList, setMessageList] = useState<NewMessageDto[]>([])
   const [text, setText] = useState('')
 
   const getGroupmessage = async (groupId: string) => {
@@ -33,6 +33,10 @@ const useMessageInfo = (params: useMessageInfoParams) => {
   useEffect(() => {
     socket.on('new message', (data: NewMessageDto) => {
       displaySnackbar(`New message from ${data.senderNickname}`, 'info')
+      console.log(data)
+      if (data.senderId === focus) {
+        setMessageList((prev) => [...(prev || []), data])
+      }
     })
   })
 
