@@ -8,7 +8,7 @@ import useAuth from './hooks/useAuth'
 import useChatInfo from './hooks/useChatInfo'
 
 export default function ChatPage() {
-  const { isVerify } = useAuth()
+  const { isVerify, logout } = useAuth()
   const { getAllClient, clientList } = useChatInfo()
   useEffect(() => {
     if (isVerify) {
@@ -22,7 +22,7 @@ export default function ChatPage() {
         <Topbar />
       </Grid>
       <Grid item container xs>
-        <MainFrame ClientList={clientList} />
+        <MainFrame ClientList={clientList} logout={logout} />
       </Grid>
     </FullScreenGrid>
   )

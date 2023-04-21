@@ -15,7 +15,7 @@ const useAuth = () => {
       socket.emit('verify token', body)
       socket.on('verify status', (data) => {
         if (!data.isSuccess) {
-          router.replace('')
+          router.replace('/')
         } else {
           setIsVerify(true)
         }
@@ -25,7 +25,16 @@ const useAuth = () => {
     }
   })
 
-  return { isVerify }
+  const logout = () => {
+    try {
+      socket.emit('logout')
+      router.replace('/')
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  return { isVerify, logout }
 }
 
 export default useAuth
