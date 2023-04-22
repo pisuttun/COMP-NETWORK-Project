@@ -147,8 +147,8 @@ export const handleLogout = async (io: Server, socket: Socket, userId: string) =
   if (client && !client.isInvisibility) {
     const clientInfo: ClientInfoDto = {
       userId: String(client._id),
-      nickname: client.nickname,
       status: client.status,
+      nickname: client.nickname,
     }
     io.emit('client info update', clientInfo)
   }
