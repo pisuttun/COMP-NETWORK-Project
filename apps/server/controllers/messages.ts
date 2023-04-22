@@ -73,6 +73,7 @@ export const handleGetAllMessage = async (req: any, res: any) => {
   console.log('req : ', req.query)
   const reqParams: ReqGetMessageDto = req.query
   const { latestMessageId, senderId, receiverId, groupId } = reqParams
+  const fixedNumberOfMessage = 10
 
   let chatDataQuery: any = {}
   if (latestMessageId) {
@@ -97,7 +98,7 @@ export const handleGetAllMessage = async (req: any, res: any) => {
       .sort({
         createdAt: -1,
       })
-      .limit(6)
+      .limit(fixedNumberOfMessage + 1)
   } else if (groupId) {
     chatDataList = await chatData
       .find({ ...chatDataQuery, groupId: groupId })
@@ -110,14 +111,14 @@ export const handleGetAllMessage = async (req: any, res: any) => {
       .sort({
         createdAt: -1,
       })
-      .limit(6)
+      .limit(fixedNumberOfMessage + 1)
   }
   console.log('chatDataList: ', chatDataList)
   let nextMessageId = ''
-  //if chatDataList size = 6, cut to 5 and 6 is nextMessageId
-  if (chatDataList.length === 6) {
+  //if chatDataList size = fixedNumberOfMessage + 1, cut to fixedNumberOfMessage and the last one is nextMessageId
+  if (chatDataList.length === fixedNumberOfMessage + 1) {
     nextMessageId = chatDataList[chatDataList.length - 1]._id
-    chatDataList = chatDataList.slice(0, 5)
+    chatDataList = chatDataList.slice(0, fixedNumberOfMessage)
   }
   const messages: MessageDto[] = chatDataList.map((chatData) => {
     return {
