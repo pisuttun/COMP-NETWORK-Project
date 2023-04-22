@@ -2,7 +2,7 @@
 import { Server, Socket } from 'socket.io'
 import clientModel from '../database/model/client'
 import jwt from 'jsonwebtoken'
-import { VerifyStatusDto, YourIdDto, ClientStatus } from '@chatAIP/dtos'
+import { VerifyStatusDto, YourIdDto, ClientStatus, ClientInfoDto } from '@chatAIP/dtos'
 const users: string[] = []
 
 const addOnlineUsers = (newSocketId: string) => {
@@ -40,6 +40,14 @@ export const handleRegister = async (io: Server, socket: Socket, body: any) => {
       socketId: socketId,
     })
     const token = newClient.getSignedJwtToken()
+    //emit {new client} info to all online users
+    const newClientEmit: ClientInfoDto = {
+      userId: String(newClient._id),
+      status: newClient.status,
+      nickname: newClient.nickname,
+    }
+    io.emit('new client', newClientEmit)
+
     return yourId(io, {
       isSuccess: true,
       socketId,
@@ -96,11 +104,21 @@ export const handleLogin = async (io: Server, socket: Socket, body: any) => {
         })
       } else {
         const token = client.getSignedJwtToken()
-        await clientModel.findByIdAndUpdate(
+        const updatedClient = await clientModel.findByIdAndUpdate(
           client.id,
           { socketId: socket.id, status: ClientStatus.AVAILABLE },
           { new: true },
         )
+        //emit {client info update} to all online users, indicate the user is online (if not invisible)
+        if (updatedClient && !updatedClient.isInvisibility) {
+          const clientInfo: ClientInfoDto = {
+            userId: String(updatedClient._id),
+            status: updatedClient.status,
+            nickname: updatedClient.nickname,
+          }
+          io.emit('client info update', clientInfo)
+        }
+
         return yourId(io, {
           isSuccess: true,
           socketId,
@@ -125,6 +143,16 @@ export const handleLogout = async (io: Server, socket: Socket, userId: string) =
   )
   users.splice(users.indexOf(socket.id), 1)
   console.log('current users: ', users)
+  //emit {client info update} to all online users, indicate the user is logout (if not invisible)
+  if (client && !client.isInvisibility) {
+    const clientInfo: ClientInfoDto = {
+      userId: String(client._id),
+      status: client.status,
+      nickname: client.nickname,
+    }
+    io.emit('client info update', clientInfo)
+  }
+  return true
 }
 
 export const handleDisconnect = async (io: Server, socket: Socket) => {
@@ -170,6 +198,16 @@ export const handleVerify = async (io: Server, socket: Socket, token: string) =>
       nickname: client.nickname,
       userId: String(client._id),
     })
+
+    //emit {client info update} to all online users, indicate the user is online (if not invisible)
+    if (client && !client.isInvisibility) {
+      const clientInfo: ClientInfoDto = {
+        userId: String(client._id),
+        status: client.status,
+        nickname: client.nickname,
+      }
+      io.emit('client info update', clientInfo)
+    }
     return {
       isSuccess: verifyStatus(io, socket.id, { isSuccess: true }).isSuccess,
       userId: decoded.id,

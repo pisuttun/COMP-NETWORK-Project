@@ -70,9 +70,9 @@ export const handleSendMessage = async (io: Server, socket: Socket, body: SendMe
 
 export const handleGetAllMessage = async (req: any, res: any) => {
   console.log('get all chat data')
-  console.log('req : ', req.body)
-  const reqBody: ReqGetMessageDto = req.body
-  const { latestMessageId, senderId, receiverId, groupId } = reqBody
+  console.log('req : ', req.query)
+  const reqParams: ReqGetMessageDto = req.query
+  const { latestMessageId, senderId, receiverId, groupId } = reqParams
 
   let chatDataQuery: any = {}
   if (latestMessageId) {
