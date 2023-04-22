@@ -2,7 +2,7 @@
 import { Server, Socket } from 'socket.io'
 import clientModel from '../database/model/client'
 import jwt from 'jsonwebtoken'
-import { VerifyStatusDto, YourIdDto, ClientStatus } from '@chatAIP/dtos'
+import { VerifyStatusDto, YourIdDto, ClientStatus, ClientInfoDto } from '@chatAIP/dtos'
 const users: string[] = []
 
 const addOnlineUsers = (newSocketId: string) => {
@@ -40,6 +40,14 @@ export const handleRegister = async (io: Server, socket: Socket, body: any) => {
       socketId: socketId,
     })
     const token = newClient.getSignedJwtToken()
+    //emit {new client} info to all online users
+    const newClientEmit: ClientInfoDto = {
+      userId: String(newClient._id),
+      nickname: newClient.nickname,
+      status: newClient.status,
+    }
+    io.emit('new client', newClientEmit)
+
     return yourId(io, {
       isSuccess: true,
       socketId,
@@ -101,6 +109,7 @@ export const handleLogin = async (io: Server, socket: Socket, body: any) => {
           { socketId: socket.id, status: ClientStatus.AVAILABLE },
           { new: true },
         )
+        //TODO : emit {change client info} to all online users, indicate the user is online
         return yourId(io, {
           isSuccess: true,
           socketId,
@@ -125,6 +134,7 @@ export const handleLogout = async (io: Server, socket: Socket, userId: string) =
   )
   users.splice(users.indexOf(socket.id), 1)
   console.log('current users: ', users)
+  //TODO : emit {change client info} to all online users, indicate the user is logout (if not invisible)
 }
 
 export const handleDisconnect = async (io: Server, socket: Socket) => {
