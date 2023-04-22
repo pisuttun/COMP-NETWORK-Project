@@ -34,7 +34,6 @@ const useTextFieldControl = (value: string, setValue: Dispatch<SetStateAction<st
       document.body.removeChild(hiddenDiv)
 
       if (contentHeight <= line) {
-        console.log(Math.floor((contentHeight * 4) / line - 1))
         setRow(Math.floor((contentHeight * 4) / line - 1))
         setValue(e)
       }

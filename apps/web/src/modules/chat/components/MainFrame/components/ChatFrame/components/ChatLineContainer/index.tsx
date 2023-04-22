@@ -11,7 +11,6 @@ export default function ChatLineContainer(props: ChatLineContainerProps) {
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget
     const isAtTop = scrollHeight + scrollTop - clientHeight < 2
-    console.log(clientHeight, scrollHeight, scrollTop)
     if (isAtTop) {
       Loader()
     }

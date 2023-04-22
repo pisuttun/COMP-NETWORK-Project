@@ -1,5 +1,5 @@
 import { useSocket } from 'common/context/socketContext'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { NewMessageDto, ReqGetMessageDto, ResGetMessageDto, SendMessageDto } from '@chatAIP/dtos'
 import { useMessageInfoParams } from './types'
 import { useSnackbar } from 'common/context/SnackbarContext'
@@ -11,9 +11,10 @@ const useMessageInfo = (params: useMessageInfoParams) => {
 
   const { socket } = useSocket()
   const [messageList, setMessageList] = useState<NewMessageDto[]>([])
-  const [nextMessage, setNextMessage] = useState('')
+  const nextMessage = useRef('')
   const [text, setText] = useState('')
   const [myId, setMyId] = useState('')
+  const isLoading = useRef(false)
 
   const getGroupmessage = async (groupId: string) => {
     socket.on(groupId + ' message', (data) => {
@@ -35,26 +36,37 @@ const useMessageInfo = (params: useMessageInfoParams) => {
 
   const getMessage = useCallback(async () => {
     console.log('This is my ID :', myId)
-    try {
-      const res = (
-        await apiClient.get<ResGetMessageDto>(`/api/messages`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-          params: {
-            latestMessageId: nextMessage,
-            senderId: focus,
-            receiverId: myId,
-          },
-        })
-      ).data
-      setNextMessage(res.nextMessageId)
-      const oldMessage = res.messages as NewMessageDto[]
-      setMessageList((prev) => [...(prev || []), ...(oldMessage || [])])
-    } catch (err) {
-      console.log(err)
+    if (!isLoading.current && nextMessage.current != '-') {
+      isLoading.current = true
+      try {
+        const res = (
+          await apiClient.get(`/api/messages`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            params: {
+              latestMessageId: nextMessage.current,
+              senderId: focus,
+              receiverId: myId,
+            },
+          })
+        ).data.data
+        console.log('Next message condition: ', res.nextMessageId, messageList)
+        if (res.nextMessageId === '' && messageList.length !== 0) {
+          nextMessage.current = '-'
+        } else {
+          nextMessage.current = res.nextMessageId
+        }
+
+        const oldMessage = res.messages
+        console.log('Message :', oldMessage)
+        setMessageList((prev) => [...(prev || []), ...(oldMessage || [])])
+      } catch (err) {
+        console.log(err)
+      }
+      isLoading.current = false
     }
-  }, [focus, myId, nextMessage])
+  }, [focus, messageList, myId])
 
   useEffect(() => {
     socket.off('new message')
@@ -68,8 +80,23 @@ const useMessageInfo = (params: useMessageInfoParams) => {
   }, [displaySnackbar, focus, socket])
 
   useEffect(() => {
-    getMessage()
-  }, [focus, getMessage])
+    nextMessage.current = ''
+    console.log('Reset nextMessage')
+    setMessageList([])
+  }, [focus])
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      await getMessage()
+    }
+    console.log('Possible to fetch : ')
+    if (messageList.length === 0) {
+      console.log('Fetch : ', nextMessage.current)
+      fetchMessages()
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messageList, focus])
   useEffect(() => {
     setMyId(localStorage.getItem('ID')!)
   }, [])
