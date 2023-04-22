@@ -1,6 +1,5 @@
 import React, { createContext, useEffect } from 'react'
-import { io } from 'socket.io-client'
-import { ISocketContext } from './types'
+import { ISocketContext, ISocketProvider } from './types'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { CircularProgress } from '@mui/material'
@@ -10,9 +9,7 @@ const SocketContext = createContext<ISocketContext>({} as ISocketContext)
 
 export const useSocket = () => React.useContext(SocketContext)
 
-export const SocketProvider = ({ children }: React.PropsWithChildren<{}>) => {
-  const URL = process.env.NEXT_PUBLIC_DROPLET_URL || 'http://localhost:8000'
-  const socket = io(URL, { transports: ['websocket'], reconnection: false })
+export const SocketProvider = ({ children, socket }: ISocketProvider) => {
   const router = useRouter()
 
   const [loading, setLoading] = useState(false)
@@ -37,7 +34,7 @@ export const SocketProvider = ({ children }: React.PropsWithChildren<{}>) => {
   })
 
   return (
-    <SocketContext.Provider value={{ socket }}>
+    <SocketContext.Provider value={{ socket, loading }}>
       {children}
       {loading && (
         <CircularProgress sx={{ position: 'fixed', zIndex: 99, top: '50%', left: '50%' }} />
