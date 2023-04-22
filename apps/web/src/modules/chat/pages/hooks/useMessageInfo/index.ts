@@ -61,16 +61,17 @@ const useMessageInfo = (params: useMessageInfoParams) => {
             },
           })
         ).data.data
-        console.log('Next message condition: ', res.nextMessageId, messageList)
-        if (res.nextMessageId === '' && res.messages.length !== 0) {
+        console.log('Next message condition: ', res.nextMessageId, res.messages)
+        if (res.nextMessageId === '' && (!res.messages || res.messages.length !== 0)) {
           nextMessage.current = '-'
         } else {
           nextMessage.current = res.nextMessageId
         }
-
-        const oldMessage = res.messages
-        console.log('Message :', oldMessage)
-        setMessageList((prev) => [...(prev || []), ...(oldMessage || [])])
+        if (res.messages.length !== 0) {
+          const oldMessage = res.messages
+          console.log('Message :', oldMessage)
+          setMessageList((prev) => [...(prev || []), ...(oldMessage || [])])
+        }
       } catch (err) {
         console.log(err)
       }
