@@ -7,7 +7,7 @@ const useChatInfo = (params: useChatInfoParams) => {
   const { focus, setFocus } = params
   const [focusText, setFocusText] = useState<string>('')
   const [focusOnline, setFocusOnline] = useState<ClientStatus | undefined>(ClientStatus.OFFLINE)
-  const { socket } = useSocket()
+  const { socket, loading } = useSocket()
   const [groupList, setGroupList] = useState<GroupInfoDto[]>()
   const [joinedGroupList, setJoinedGroupList] = useState<GroupInfoDto[]>()
   const [unjoinGroupList, setUnjoinGroupList] = useState<GroupInfoDto[]>()
@@ -57,6 +57,11 @@ const useChatInfo = (params: useChatInfoParams) => {
         groupId: groupId,
       }
       socket.emit('leave group', body)
+      setGroupList((prevGroupList) =>
+        prevGroupList?.map((group) =>
+          group.groupId === groupId ? { ...group, isJoined: false } : group,
+        ),
+      )
     } catch (err) {
       console.log(err)
     }
@@ -69,14 +74,17 @@ const useChatInfo = (params: useChatInfoParams) => {
         groupId: groupId,
       }
       socket.emit('join group', body)
+      setGroupList((prevGroupList) =>
+        prevGroupList?.map((group) =>
+          group.groupId === groupId ? { ...group, isJoined: true } : group,
+        ),
+      )
     } catch (err) {
       console.log(err)
     }
   }
 
   const getAllClient = useCallback(async () => {
-    console.log('????')
-
     try {
       socket.emit('get all client')
       socket.off('all client')
@@ -92,13 +100,16 @@ const useChatInfo = (params: useChatInfoParams) => {
   }, [setFocus, socket])
 
   useEffect(() => {
-    if (isDM) {
-      getAllClient()
-    } else {
-      getAllGroup()
+    if (!loading) {
+      if (isDM) {
+        getAllClient()
+      } else {
+        getAllGroup()
+      }
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDM])
+  }, [isDM, loading])
 
   useEffect(() => {
     if (isDM) {
