@@ -13,7 +13,7 @@ const uri = process.env.MONGODB_URI
 
 async function connectDatabase() {
   //TODO: add connection options if needed
-  const db = await connect(uri, {})
+  const db = await connect(uri, { dbName: 'ChatIP_Database' })
   console.log('MongoDB connected..., to url : ', uri)
 
   // clear all socketId and status

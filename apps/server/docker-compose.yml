@@ -3,6 +3,10 @@ services:
   database:
     image: mongo:4.4
     restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ChatIP_Database
     ports:
       - 27018:27017
     volumes:
