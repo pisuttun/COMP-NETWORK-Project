@@ -50,7 +50,7 @@ const useMessageInfo = (params: useMessageInfoParams) => {
       ).data
       setNextMessage(res.nextMessageId)
       const oldMessage = res.messages as NewMessageDto[]
-      setMessageList((prev) => [...(prev || []), ...oldMessage])
+      setMessageList((prev) => [...(prev || []), ...(oldMessage || [])])
     } catch (err) {
       console.log(err)
     }

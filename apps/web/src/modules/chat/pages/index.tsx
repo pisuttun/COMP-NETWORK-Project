@@ -11,7 +11,21 @@ import useMessageInfo from './hooks/useMessageInfo'
 export default function ChatPage() {
   const { focus, setFocus } = useShareVariable()
   const { logout } = useAuth()
-  const { groupList, clientList, isDM, setIsDM } = useChatInfo({ focus, setFocus })
+  const {
+    joinedGroupList,
+    unjoinGroupList,
+    clientList,
+    isDM,
+    setIsDM,
+    focusText,
+    focusOnline,
+    createNewGroup,
+    joinGroup,
+    leaveGroup,
+  } = useChatInfo({
+    focus,
+    setFocus,
+  })
   const { messageList, text, setText, sendMessage, getMessage } = useMessageInfo({
     focus,
     setFocus,
@@ -20,11 +34,12 @@ export default function ChatPage() {
   return (
     <FullScreenGrid container direction="column" justifyContent="flex-start" alignItems="stretch">
       <Grid item>
-        <Topbar isDM={isDM} setIsDM={setIsDM} />
+        <Topbar isDM={isDM} setIsDM={setIsDM} focusText={focusText} focusOnline={focusOnline} />
       </Grid>
       <Grid item container xs>
         <MainFrame
-          groupList={groupList}
+          joinedGroupList={joinedGroupList}
+          unjoinGroupList={unjoinGroupList}
           clientList={clientList}
           logout={logout}
           isDM={isDM}
@@ -35,6 +50,9 @@ export default function ChatPage() {
           focus={focus}
           setFocus={setFocus}
           getMessage={getMessage}
+          createNewGroup={createNewGroup}
+          joinGroup={joinGroup}
+          leaveGroup={leaveGroup}
         />
       </Grid>
     </FullScreenGrid>

@@ -5,19 +5,37 @@ import ChatNameDisplay from 'modules/chat/components/ChatNameDisplay'
 import ChatNameContainer from './components/ChatNameContainer'
 import { SidebarProps } from './types'
 import { ClientStatus } from '@chatAIP/dtos'
+import GroupNameContainer from './components/GroupNameContainer'
 
 export default function Sidebar(props: SidebarProps) {
-  const { groupList, clientList, logout, isDM, focus, setFocus } = props
+  const {
+    joinedGroupList,
+    unjoinGroupList,
+    clientList,
+    logout,
+    isDM,
+    focus,
+    setFocus,
+    createNewGroup,
+    joinGroup,
+    leaveGroup,
+  } = props
   return (
     <RootContainer>
       <ChatChoiceContainer>
-        <ChatNameContainer
-          isDM={isDM}
-          chatChoice={clientList}
-          groupList={groupList}
-          focus={focus}
-          setFocus={setFocus}
-        />
+        {isDM ? (
+          <ChatNameContainer chatChoice={clientList} focus={focus} setFocus={setFocus} />
+        ) : (
+          <GroupNameContainer
+            joinedGroupList={joinedGroupList}
+            unjoinGroupList={unjoinGroupList}
+            focus={focus}
+            setFocus={setFocus}
+            createNewGroup={createNewGroup}
+            joinGroup={joinGroup}
+            leaveGroup={leaveGroup}
+          />
+        )}
       </ChatChoiceContainer>
       <UserContainer>
         <ChatNameDisplay

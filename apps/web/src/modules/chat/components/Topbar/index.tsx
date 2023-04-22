@@ -6,11 +6,11 @@ import { RootContainer } from './styled'
 import { TopbarProps } from './types'
 
 export default function Topbar(props: TopbarProps) {
-  const { isDM, setIsDM } = props
+  const { isDM, setIsDM, focusText, focusOnline } = props
   return (
     <RootContainer>
       <ListGroup isDM={isDM} setIsDM={setIsDM} />
-      <ChatName />
+      <ChatName focusText={focusText} focusOnline={focusOnline} />
     </RootContainer>
   )
 }

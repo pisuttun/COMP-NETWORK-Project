@@ -6,7 +6,8 @@ import { MainFrameProps } from './types'
 
 export default function MainFrame(props: MainFrameProps) {
   const {
-    groupList,
+    joinedGroupList,
+    unjoinGroupList,
     clientList,
     logout,
     isDM,
@@ -17,16 +18,23 @@ export default function MainFrame(props: MainFrameProps) {
     focus,
     setFocus,
     getMessage,
+    createNewGroup,
+    joinGroup,
+    leaveGroup,
   } = props
   return (
     <RootContainer>
       <Sidebar
-        groupList={groupList}
+        joinedGroupList={joinedGroupList}
+        unjoinGroupList={unjoinGroupList}
         clientList={clientList}
         logout={logout}
         isDM={isDM}
         focus={focus}
         setFocus={setFocus}
+        createNewGroup={createNewGroup}
+        joinGroup={joinGroup}
+        leaveGroup={leaveGroup}
       />
       <ChatFrame
         messageList={messageList}

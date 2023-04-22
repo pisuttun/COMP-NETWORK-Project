@@ -23,7 +23,7 @@ const useAuth = () => {
     } catch (err) {
       console.log(err)
     }
-  })
+  }, [socket])
 
   const logout = () => {
     try {
@@ -35,7 +35,7 @@ const useAuth = () => {
     }
   }
 
-  return { isVerify, logout }
+  return { logout }
 }
 
 export default useAuth

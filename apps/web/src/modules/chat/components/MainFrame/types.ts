@@ -5,7 +5,8 @@ export interface MainFrameProps {
   clientList?: ClientInfoDto[]
   logout: () => void
   isDM: boolean
-  groupList?: GroupInfoDto[]
+  joinedGroupList?: GroupInfoDto[]
+  unjoinGroupList?: GroupInfoDto[]
   messageList?: NewMessageDto[]
   text: string
   setText: Dispatch<SetStateAction<string>>
@@ -13,4 +14,7 @@ export interface MainFrameProps {
   focus: string
   setFocus: Dispatch<SetStateAction<string>>
   getMessage: () => Promise<void>
+  createNewGroup: (name: string) => Promise<void>
+  joinGroup: (groupId: string) => Promise<void>
+  leaveGroup: (groupId: string) => Promise<void>
 }

@@ -1,7 +1,10 @@
+import { useSocket } from 'common/context/socketContext'
 import { useState } from 'react'
 
 const useShareVariable = () => {
   const [focus, setFocus] = useState<string>('')
-  return { focus, setFocus }
+  const { socket } = useSocket()
+
+  return { focus, setFocus, socket }
 }
 export default useShareVariable
