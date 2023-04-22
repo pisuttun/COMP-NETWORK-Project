@@ -32,6 +32,16 @@ const useMessageInfo = (params: useMessageInfoParams) => {
       receiverId: focus,
     }
     socket.emit('send message', body)
+    if (myId !== focus) {
+      const newMessage: NewMessageDto = {
+        messageId: '',
+        text: text,
+        senderId: myId!,
+        senderNickname: localStorage.getItem('name')!,
+        createdAt: new Date(),
+      }
+      setMessageList((prev) => [newMessage, ...(prev || [])])
+    }
   }, [focus, myId, socket, text])
 
   const getMessage = useCallback(async () => {
@@ -52,7 +62,7 @@ const useMessageInfo = (params: useMessageInfoParams) => {
           })
         ).data.data
         console.log('Next message condition: ', res.nextMessageId, messageList)
-        if (res.nextMessageId === '' && messageList.length !== 0) {
+        if (res.nextMessageId === '' && res.messages.length !== 0) {
           nextMessage.current = '-'
         } else {
           nextMessage.current = res.nextMessageId

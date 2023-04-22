@@ -25,10 +25,11 @@ export default function ChatFrame(props: ChatFrameProps) {
           }
         }}
         onKeyDown={(event) => {
-          if (event.key === 'Enter' && !event.shiftKey) {
+          if (event.key === 'Enter' && !event.shiftKey && text.trim() !== '') {
             sendMessage()
             setText('')
             event.preventDefault()
+            isOverflow('')
           }
         }}
       />
