@@ -15,8 +15,8 @@ export interface NewMessageDto {
 
 export interface ReqGetMessageDto {
   latestMessageId?: string
-  senderId?: string
-  receiverId?: string
+  destinationId?: string
+  sourceId?: string
   groupId?: string
 }
 
