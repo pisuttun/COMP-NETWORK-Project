@@ -36,7 +36,6 @@ const useChatInfo = (params: useChatInfoParams) => {
 
   const createNewGroup = useCallback(
     async (name: string) => {
-      console.log('CREATE')
       try {
         const body: CreateGroupDto = {
           clientId: localStorage.getItem('ID')!,

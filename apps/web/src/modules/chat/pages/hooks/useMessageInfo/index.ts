@@ -45,7 +45,6 @@ const useMessageInfo = (params: useMessageInfoParams) => {
   }, [focus, myId, socket, text])
 
   const getMessage = useCallback(async () => {
-    console.log('This is my ID :', myId)
     if (!isLoading.current && nextMessage.current != '-') {
       isLoading.current = true
       try {
@@ -61,7 +60,6 @@ const useMessageInfo = (params: useMessageInfoParams) => {
             },
           })
         ).data.data
-        console.log('Next message condition: ', res.nextMessageId, res.messages)
         if (res.nextMessageId === '' && (!res.messages || res.messages.length !== 0)) {
           nextMessage.current = '-'
         } else {
@@ -69,7 +67,6 @@ const useMessageInfo = (params: useMessageInfoParams) => {
         }
         if (res.messages.length !== 0) {
           const oldMessage = res.messages
-          console.log('Message :', oldMessage)
           setMessageList((prev) => [...(prev || []), ...(oldMessage || [])])
         }
       } catch (err) {
@@ -83,7 +80,6 @@ const useMessageInfo = (params: useMessageInfoParams) => {
     socket.off('new message')
     socket.on('new message', (data: NewMessageDto) => {
       displaySnackbar(`New message from ${data.senderNickname}`, 'info')
-      console.log(data)
       if (data.senderId === focus) {
         setMessageList((prev) => [data, ...(prev || [])])
       }
@@ -92,7 +88,6 @@ const useMessageInfo = (params: useMessageInfoParams) => {
 
   useEffect(() => {
     nextMessage.current = ''
-    console.log('Reset nextMessage')
     setMessageList([])
   }, [focus])
 
@@ -100,9 +95,7 @@ const useMessageInfo = (params: useMessageInfoParams) => {
     const fetchMessages = async () => {
       await getMessage()
     }
-    console.log('Possible to fetch : ')
     if (messageList.length === 0) {
-      console.log('Fetch : ', nextMessage.current)
       fetchMessages()
     }
 
