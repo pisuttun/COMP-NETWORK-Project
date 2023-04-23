@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useSocket } from 'common/context/socketContext'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { NewMessageDto, ReqGetMessageDto, ResGetMessageDto, SendMessageDto } from '@chatAIP/dtos'
@@ -34,7 +35,7 @@ const useMessageInfo = (params: useMessageInfoParams) => {
     socket.emit('send message', body)
     if (myId !== focus) {
       const newMessage: NewMessageDto = {
-        messageId: '',
+        messageId: focus + messageList.length,
         text: text,
         senderId: myId!,
         senderNickname: localStorage.getItem('name')!,
@@ -80,11 +81,13 @@ const useMessageInfo = (params: useMessageInfoParams) => {
     socket.off('new message')
     socket.on('new message', (data: NewMessageDto) => {
       displaySnackbar(`New message from ${data.senderNickname}`, 'info')
+      console.log('Add message condition senderId:', data.senderId)
+      console.log('Add message condition focus:', focus)
       if (data.senderId === focus) {
         setMessageList((prev) => [data, ...(prev || [])])
       }
     })
-  }, [displaySnackbar, focus, socket])
+  }, [focus])
 
   useEffect(() => {
     nextMessage.current = ''
