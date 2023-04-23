@@ -70,73 +70,80 @@ export const handleSendMessage = async (io: Server, socket: Socket, body: SendMe
 
 export const handleGetAllMessage = async (req: any, res: any) => {
   console.log('get all chat data')
-  console.log('req : ', req.query)
-  const reqParams: ReqGetMessageDto = req.query
-  const { latestMessageId, destinationId, sourceId, groupId } = reqParams
-  const fixedNumberOfMessage = 10
+  try {
+    console.log('req : ', req.query)
+    const reqParams: ReqGetMessageDto = req.query
+    const { latestMessageId, destinationId, sourceId, groupId } = reqParams
+    const fixedNumberOfMessage = 10
 
-  let chatDataQuery: any = {}
-  if (latestMessageId) {
-    chatDataQuery = { _id: { $lte: latestMessageId } }
-  }
-
-  let chatDataList: any[] = []
-  if (sourceId && destinationId) {
-    chatDataList = await chatData
-      .find({
-        $or: [
-          {
-            $and: [{ senderId: destinationId, receiverId: sourceId }, { ...chatDataQuery }],
-          },
-          {
-            $and: [{ senderId: sourceId, receiverId: destinationId }, { ...chatDataQuery }],
-          },
-        ],
-      })
-      .select('text senderId createdAt')
-      .populate({
-        path: 'senderId',
-        model: 'clients',
-        select: 'nickname',
-      })
-      .sort({
-        createdAt: -1,
-      })
-      .limit(fixedNumberOfMessage + 1)
-  } else if (groupId) {
-    chatDataList = await chatData
-      .find({ ...chatDataQuery, groupId: groupId })
-      .select('text senderId createdAt')
-      .populate({
-        path: 'senderId',
-        model: 'clients',
-        select: 'nickname',
-      })
-      .sort({
-        createdAt: -1,
-      })
-      .limit(fixedNumberOfMessage + 1)
-  }
-  console.log('chatDataList: ', chatDataList)
-  let nextMessageId = ''
-  //if chatDataList size = fixedNumberOfMessage + 1, cut to fixedNumberOfMessage and the last one is nextMessageId
-  if (chatDataList.length === fixedNumberOfMessage + 1) {
-    nextMessageId = chatDataList[chatDataList.length - 1]._id
-    chatDataList = chatDataList.slice(0, fixedNumberOfMessage)
-  }
-  const messages: MessageDto[] = chatDataList.map((chatData) => {
-    return {
-      messageId: chatData._id,
-      text: chatData.text,
-      senderId: chatData.senderId._id,
-      senderNickname: chatData.senderId.nickname,
-      createdAt: chatData.createdAt,
+    let chatDataQuery: any = {}
+    if (latestMessageId) {
+      chatDataQuery = { _id: { $lte: latestMessageId } }
     }
-  })
-  const result: ResGetMessageDto = { messages, nextMessageId }
-  //REST response
-  res.status(200).json({
-    status: 'success',
-    data: result,
-  })
+
+    let chatDataList: any[] = []
+    if (sourceId && destinationId) {
+      chatDataList = await chatData
+        .find({
+          $or: [
+            {
+              $and: [{ senderId: destinationId, receiverId: sourceId }, { ...chatDataQuery }],
+            },
+            {
+              $and: [{ senderId: sourceId, receiverId: destinationId }, { ...chatDataQuery }],
+            },
+          ],
+        })
+        .select('text senderId createdAt')
+        .populate({
+          path: 'senderId',
+          model: 'clients',
+          select: 'nickname',
+        })
+        .sort({
+          createdAt: -1,
+        })
+        .limit(fixedNumberOfMessage + 1)
+    } else if (groupId) {
+      chatDataList = await chatData
+        .find({ ...chatDataQuery, groupId: groupId })
+        .select('text senderId createdAt')
+        .populate({
+          path: 'senderId',
+          model: 'clients',
+          select: 'nickname',
+        })
+        .sort({
+          createdAt: -1,
+        })
+        .limit(fixedNumberOfMessage + 1)
+    }
+    console.log('chatDataList: ', chatDataList)
+    let nextMessageId = ''
+    //if chatDataList size = fixedNumberOfMessage + 1, cut to fixedNumberOfMessage and the last one is nextMessageId
+    if (chatDataList.length === fixedNumberOfMessage + 1) {
+      nextMessageId = chatDataList[chatDataList.length - 1]._id
+      chatDataList = chatDataList.slice(0, fixedNumberOfMessage)
+    }
+    const messages: MessageDto[] = chatDataList.map((chatData) => {
+      return {
+        messageId: chatData._id,
+        text: chatData.text,
+        senderId: chatData.senderId._id,
+        senderNickname: chatData.senderId.nickname,
+        createdAt: chatData.createdAt,
+      }
+    })
+    const result: ResGetMessageDto = { messages, nextMessageId }
+    //REST response
+    res.status(200).json({
+      status: 'success',
+      data: result,
+    })
+  } catch (error) {
+    console.log('error in get messages: ', error)
+    res.status(500).json({
+      message: error,
+    })
+  }
 }
