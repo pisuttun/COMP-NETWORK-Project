@@ -55,8 +55,8 @@ const useMessageInfo = (params: useMessageInfoParams) => {
             },
             params: {
               latestMessageId: nextMessage.current,
-              senderId: focus,
-              receiverId: myId,
+              sourceId: focus,
+              destinationId: myId,
             },
           })
         ).data.data
