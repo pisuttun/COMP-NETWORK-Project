@@ -1,14 +1,14 @@
 import { Dispatch, SetStateAction, useRef, useState } from 'react'
 
 const useTextFieldControl = (value: string, setValue: Dispatch<SetStateAction<string>>) => {
-  const [line, setLine] = useState<number>(0)
+  const line = useRef(0)
   const [row, setRow] = useState<number>(0)
   const textFieldRef = useRef<HTMLTextAreaElement>(null)
 
   const isOverflow = (e: string) => {
     if (textFieldRef.current) {
-      if (line === 0) {
-        setLine(textFieldRef.current.clientHeight * 4)
+      if (line.current === 0) {
+        line.current = textFieldRef.current.clientHeight * 4
       }
 
       const hiddenDiv = document.createElement('div')
@@ -33,8 +33,8 @@ const useTextFieldControl = (value: string, setValue: Dispatch<SetStateAction<st
       // Remove the hidden div from the DOM
       document.body.removeChild(hiddenDiv)
 
-      if (contentHeight <= line) {
-        setRow(Math.floor((contentHeight * 4) / line - 1))
+      if (contentHeight <= line.current) {
+        setRow(Math.floor((contentHeight * 4) / line.current - 1))
         setValue(e)
       }
     }
