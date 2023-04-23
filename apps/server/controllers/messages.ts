@@ -72,23 +72,27 @@ export const handleGetAllMessage = async (req: any, res: any) => {
   console.log('get all chat data')
   console.log('req : ', req.query)
   const reqParams: ReqGetMessageDto = req.query
-  const { latestMessageId, senderId, receiverId, groupId } = reqParams
+  const { latestMessageId, destinationId, sourceId, groupId } = reqParams
   const fixedNumberOfMessage = 10
 
   let chatDataQuery: any = {}
   if (latestMessageId) {
     chatDataQuery = { _id: { $lte: latestMessageId } }
   }
-  if (senderId) {
-    chatDataQuery = {
-      ...chatDataQuery,
-      senderId: senderId,
-    }
-  }
+
   let chatDataList: any[] = []
-  if (receiverId) {
+  if (sourceId && destinationId) {
     chatDataList = await chatData
-      .find({ ...chatDataQuery, receiverId: receiverId })
+      .find({
+        $or: [
+          {
+            $and: [{ senderId: destinationId, receiverId: sourceId }, { ...chatDataQuery }],
+          },
+          {
+            $and: [{ senderId: sourceId, receiverId: destinationId }, { ...chatDataQuery }],
+          },
+        ],
+      })
       .select('text senderId createdAt')
       .populate({
         path: 'senderId',
