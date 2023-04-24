@@ -4,7 +4,6 @@ import { ChatLineProps } from './types'
 
 export default function ChatLine(props: ChatLineProps) {
   const { sender, time, message } = props
-  console.log('RECEIVE : ', time)
   return (
     <RootContainer>
       <SubContainer>

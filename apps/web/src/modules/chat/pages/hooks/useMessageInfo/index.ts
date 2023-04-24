@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useSocket } from 'common/context/socketContext'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { NewMessageDto, ReqGetMessageDto, ResGetMessageDto, SendMessageDto } from '@chatAIP/dtos'
+import { NewMessageDto, SendMessageDto } from '@chatAIP/dtos'
 import { useMessageInfoParams } from './types'
 import { useSnackbar } from 'common/context/SnackbarContext'
 import { apiClient } from 'common/utils/api'
