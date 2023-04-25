@@ -2,7 +2,7 @@ import { useSnackbar } from 'common/context/SnackbarContext'
 import { useSocket } from 'common/context/socketContext'
 import router from 'next/router'
 import { useState } from 'react'
-import { UserCredentialsDto } from '@chatAIP/dtos'
+import { UserCredentialsDto, YourIdDto } from '@chatAIP/dtos'
 
 const useLoginForm = () => {
   const [username, setUsername] = useState('')
@@ -26,12 +26,14 @@ const useLoginForm = () => {
         password: password,
       }
       socket.emit('login', body)
-      socket.on('your id', (data) => {
+      socket.on('your id', (data: YourIdDto) => {
         if (!data.isSuccess) {
           if (username !== '' && password !== '')
             displaySnackbar('Username or Password is wrong', 'error')
         } else router.push('/chat')
         localStorage.setItem('token', data.token)
+        localStorage.setItem('ID', data.userId)
+        localStorage.setItem('name', data.nickname)
       })
     } catch (error) {
       console.log(error)

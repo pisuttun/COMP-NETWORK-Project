@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material'
-import { RootContainer, SubContainer } from './styled'
+import { RootContainer, SubContainer, StyledReactMarkdown } from './styled'
 import { ChatLineProps } from './types'
 
 export default function ChatLine(props: ChatLineProps) {
@@ -11,11 +11,14 @@ export default function ChatLine(props: ChatLineProps) {
           {sender}
         </Typography>
         <Typography variant="caption" sx={{ color: '#D0B1F8', paddingLeft: '6px' }}>
-          {time}
+          {new Date(time).toLocaleTimeString()}
         </Typography>
       </SubContainer>
-      <Typography variant="subtitle1" sx={{ color: '#EFE0FF' }}>
-        {message}
+      <Typography
+        variant="subtitle1"
+        sx={{ color: '#EFE0FF', wordWrap: 'break-word', maxWidth: '70vw', padding: '0' }}
+      >
+        <StyledReactMarkdown>{message}</StyledReactMarkdown>
       </Typography>
     </RootContainer>
   )

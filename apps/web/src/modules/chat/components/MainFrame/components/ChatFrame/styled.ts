@@ -5,7 +5,7 @@ export const RootContainer = styled('div')`
   flex-direction: column;
   background-color: transparent;
   justify-content: space-between;
-  width: 100%;
+  flex-grow: 1;
   border-bottom: 1px solid black;
   border-left: 1px solid black;
 `

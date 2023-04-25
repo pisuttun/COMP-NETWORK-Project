@@ -3,11 +3,21 @@ import { ChatNameContainerProps } from './types'
 import { RootContainer } from './styled'
 
 export default function ChatNameContainer(props: ChatNameContainerProps) {
-  const { ChatChoice } = props
+  const { chatChoice, focus, setFocus } = props
   return (
     <RootContainer>
-      {ChatChoice.map((item, index) => {
-        return <ChatNameDisplay isGroup={false} name={item.nickname} />
+      {chatChoice?.map((item) => {
+        return (
+          <ChatNameDisplay
+            key={item.userId}
+            isGroup={false}
+            name={item.nickname}
+            status={item.status}
+            focus={focus}
+            setFocus={setFocus}
+            id={item.userId}
+          />
+        )
       })}
     </RootContainer>
   )

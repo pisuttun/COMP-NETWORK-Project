@@ -6,7 +6,7 @@ export const RootContainer = styled('div')`
   justify-content: left;
   align-items: center;
   background-color: #412846;
-  width: 100%;
+  flex-grow: 1;
   height: 7vh;
   border-bottom: 1px solid black;
   border-left: 1px solid black;

@@ -1,7 +1,7 @@
-import { ChatLineProps } from '../ChatLine/types'
+import { NewMessageDto } from '@chatAIP/dtos'
 
 export interface ChatLineContainerProps {
-  Chat?: ChatLineProps[]
-  Loader: () => Promise<void>
+  Chat?: NewMessageDto[]
+  Loader: () => void
   curRow: number
 }
