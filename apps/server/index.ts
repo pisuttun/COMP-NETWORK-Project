@@ -170,66 +170,6 @@ io.on('connection', (socket: Socket) => {
       })
   })
 })
-// TODO: move this to a test file
-/*
-const testClient = async () => {
-  console.log('test client model and connection')
-
-  const randomNumber = Math.floor(Math.random() * 10000000000)
-  const newClient = new clientModel({
-    username: 'test username' + randomNumber,
-    password: 'test password',
-    nickname: 'test nickname',
-    socketId: randomNumber,
-    groupId: [new Types.ObjectId(), new Types.ObjectId(), new Types.ObjectId()],
-    status: ClientStatus.AVAILABLE,
-    isInvisibility: false,
-  })
-
-  await newClient.save()
-  const result = await clientModel.find().exec()
-
-  console.log('saved find result : ', result)
-}
-
-const testChatData = async () => {
-  console.log('test chatData model and connection')
-
-  const newChatData = new chatDataModel({
-    text: 'test text',
-    senderId: new Types.ObjectId(),
-    receiverId: new Types.ObjectId(),
-    groupId: new Types.ObjectId(),
-  })
-
-  await newChatData.save()
-  const result = await chatDataModel.find().exec()
-
-  console.log('saved find result : ', result)
-}
-
-const testGroup = async () => {
-  console.log('test group model and connection')
-
-  const newGroup = new groupModel({
-    groupName: 'test group name ',
-    clientId: [new Types.ObjectId(), new Types.ObjectId(), new Types.ObjectId()],
-  })
-
-  await newGroup.save()
-  const result = await groupModel.find().exec()
-
-  console.log('saved find result : ', result)
-}
-
-try {
-  testClient()
-  testChatData()
-  testGroup()
-} catch (error) {
-  console.log('error: ', error)
-}
-*/
 
 const port = process.env.port || 8000
 server.listen(port, () => console.log(`Listening on port:${port}...`))
