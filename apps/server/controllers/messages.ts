@@ -1,6 +1,7 @@
 import { Server, Socket } from 'socket.io'
 import clientModel from '../database/model/client'
 import chatData from '../database/model/chatData'
+import { Request, Response } from 'express'
 import {
   SendMessageDto,
   NewMessageDto,
@@ -8,9 +9,7 @@ import {
   ResGetMessageDto,
   ReqGetMessageDto,
 } from '@chatAIP/dtos'
-import { Schema } from 'mongoose'
 
-//TODO: add dto
 export const handleSendMessage = async (io: Server, socket: Socket, body: SendMessageDto) => {
   try {
     let { text, senderId, receiverId, groupId } = body
@@ -68,7 +67,7 @@ export const handleSendMessage = async (io: Server, socket: Socket, body: SendMe
   }
 }
 
-export const handleGetAllMessage = async (req: any, res: any) => {
+export const handleGetAllMessage = async (req: Request, res: Response) => {
   console.log('get all chat data')
   try {
     console.log('req : ', req.query)
@@ -76,7 +75,7 @@ export const handleGetAllMessage = async (req: any, res: any) => {
     const { latestMessageId, destinationId, sourceId, groupId } = reqParams
     const fixedNumberOfMessage = 10
 
-    let chatDataQuery: any = {}
+    let chatDataQuery = {}
     if (latestMessageId) {
       chatDataQuery = { _id: { $lte: latestMessageId } }
     }
