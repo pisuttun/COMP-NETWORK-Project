@@ -6,7 +6,7 @@ import { useMessageInfoParams } from './types'
 import { useSnackbar } from 'common/context/SnackbarContext'
 import { apiClient } from 'common/utils/api'
 //@ts-ignore
-import name from 'emoji-name-map'
+import emojiName from 'emoji-name-map'
 
 const useMessageInfo = (params: useMessageInfoParams) => {
   const { focus } = params
@@ -33,7 +33,7 @@ const useMessageInfo = (params: useMessageInfoParams) => {
       const matches = text.match(/:[a-z_]+:/g)
       if (matches) {
         matches.forEach((item) => {
-          const emoji = name.get(item)
+          const emoji = emojiName.get(item)
           if (emoji) {
             text = text.replace(item, emoji)
           }
@@ -41,7 +41,7 @@ const useMessageInfo = (params: useMessageInfoParams) => {
       }
       return text
     },
-    [name],
+    [emojiName],
   )
 
   const sendMessage = useCallback(() => {
