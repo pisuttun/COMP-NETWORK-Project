@@ -5,6 +5,8 @@ import { NewMessageDto, SendMessageDto } from '@chatAIP/dtos'
 import { useMessageInfoParams } from './types'
 import { useSnackbar } from 'common/context/SnackbarContext'
 import { apiClient } from 'common/utils/api'
+//@ts-ignore
+import emojiName from 'emoji-name-map'
 
 const useMessageInfo = (params: useMessageInfoParams) => {
   const { focus } = params
@@ -26,9 +28,26 @@ const useMessageInfo = (params: useMessageInfoParams) => {
     })
   }
 
+  const insertEmoji = useCallback(
+    (text: string): string => {
+      const matches = text.match(/:[a-z_]+:/g)
+      if (matches) {
+        matches.forEach((item) => {
+          const emoji = emojiName.get(item)
+          if (emoji) {
+            text = text.replace(item, emoji)
+          }
+        })
+      }
+      return text
+    },
+    [emojiName],
+  )
+
   const sendMessage = useCallback(() => {
+    const newText = insertEmoji(text)
     const body: SendMessageDto = {
-      text: text,
+      text: newText,
       senderId: myId!,
       receiverId: focus,
     }
@@ -36,7 +55,7 @@ const useMessageInfo = (params: useMessageInfoParams) => {
     if (myId !== focus) {
       const newMessage: NewMessageDto = {
         messageId: focus + messageList.length,
-        text: text,
+        text: newText,
         senderId: myId!,
         senderNickname: localStorage.getItem('name')!,
         createdAt: new Date(),

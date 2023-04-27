@@ -2,7 +2,13 @@
 import { Server, Socket } from 'socket.io'
 import clientModel from '../database/model/client'
 import jwt from 'jsonwebtoken'
-import { VerifyStatusDto, YourIdDto, ClientStatus, ClientInfoDto } from '@chatAIP/dtos'
+import {
+  VerifyStatusDto,
+  YourIdDto,
+  ClientStatus,
+  ClientInfoDto,
+  UserCredentialsDto,
+} from '@chatAIP/dtos'
 const users: string[] = []
 
 const addOnlineUsers = (newSocketId: string) => {
@@ -27,8 +33,7 @@ const verifyStatus = (io: Server, socketId: string, verifyStatusDto: VerifyStatu
   return verifyStatusDto
 }
 
-//TODO: add register Dto and change the body type
-export const handleRegister = async (io: Server, socket: Socket, body: any) => {
+export const handleRegister = async (io: Server, socket: Socket, body: UserCredentialsDto) => {
   let socketId = socket.id
   try {
     console.log('new user registered')
@@ -38,6 +43,7 @@ export const handleRegister = async (io: Server, socket: Socket, body: any) => {
       password: body.password,
       nickname: body.username, //set nickname to username by default
       socketId: socketId,
+      status: ClientStatus.OFFLINE,
     })
     const token = newClient.getSignedJwtToken()
     //emit {new client} info to all online users
@@ -67,7 +73,7 @@ export const handleRegister = async (io: Server, socket: Socket, body: any) => {
   }
 }
 
-export const handleLogin = async (io: Server, socket: Socket, body: any) => {
+export const handleLogin = async (io: Server, socket: Socket, body: UserCredentialsDto) => {
   try {
     let socketId = socket.id
     const { username, password } = body
