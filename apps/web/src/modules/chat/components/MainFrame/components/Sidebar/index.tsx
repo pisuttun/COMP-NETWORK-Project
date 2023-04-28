@@ -41,7 +41,7 @@ export default function Sidebar(props: SidebarProps) {
         <ChatNameDisplay
           isGroup={false}
           status={ClientStatus.AVAILABLE}
-          name="P"
+          name={localStorage.getItem('name')!}
           focus={'false'}
           isChoice={true}
         />

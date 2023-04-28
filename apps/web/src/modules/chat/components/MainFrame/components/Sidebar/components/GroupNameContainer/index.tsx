@@ -34,7 +34,6 @@ export default function ChatNameContainer(props: GroupNameContainerProps) {
             <Add
               onClick={() => {
                 createNewGroup(newGroupName)
-                console.log(newGroupName)
               }}
               style={{ cursor: 'pointer' }}
             />

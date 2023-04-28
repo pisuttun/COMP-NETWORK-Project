@@ -101,10 +101,14 @@ const useChatInfo = (params: useChatInfoParams) => {
           setFocus(data[0].userId)
         }
       })
+      socket.off('new client')
+      socket.on('new client', (data) => {
+        setClientList([...(clientList || []), data])
+      })
     } catch (err) {
       console.log(err)
     }
-  }, [setFocus, socket])
+  }, [clientList, setFocus, socket])
 
   useEffect(() => {
     if (!loading) {

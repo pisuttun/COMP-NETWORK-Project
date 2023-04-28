@@ -21,10 +21,9 @@ const useMessageInfo = (params: useMessageInfoParams) => {
 
   const getGroupmessage = async (groupId: string) => {
     socket.on(groupId + ' message', (data) => {
-      setMessageList((prev) => ({
-        ...(prev || []),
-        ...data,
-      }))
+      if (data.senderId === focus) {
+        setMessageList((prev) => [data, ...(prev || [])])
+      }
     })
   }
 
@@ -60,7 +59,9 @@ const useMessageInfo = (params: useMessageInfoParams) => {
         senderNickname: localStorage.getItem('name')!,
         createdAt: new Date(),
       }
-      setMessageList((prev) => [newMessage, ...(prev || [])])
+      if (isDM) {
+        setMessageList((prev) => [newMessage, ...(prev || [])])
+      }
     }
   }, [focus, myId, socket, text, insertEmoji])
 
@@ -97,15 +98,17 @@ const useMessageInfo = (params: useMessageInfoParams) => {
   }, [focus, myId])
 
   useEffect(() => {
-    socket.off('new message')
-    socket.on('new message', (data: NewMessageDto) => {
-      displaySnackbar(`New message from ${data.senderNickname}`, 'info')
-      console.log('Add message condition senderId:', data.senderId)
-      console.log('Add message condition focus:', focus)
-      if (data.senderId === focus) {
-        setMessageList((prev) => [data, ...(prev || [])])
-      }
-    })
+    if (isDM) {
+      socket.off('new message')
+      socket.on('new message', (data: NewMessageDto) => {
+        displaySnackbar(`New message from ${data.senderNickname}`, 'info')
+        if (data.senderId === focus) {
+          setMessageList((prev) => [data, ...(prev || [])])
+        }
+      })
+    } else {
+      getGroupmessage(focus)
+    }
   }, [focus])
 
   useEffect(() => {
