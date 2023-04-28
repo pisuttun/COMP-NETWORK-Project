@@ -105,6 +105,13 @@ const useChatInfo = (params: useChatInfoParams) => {
       socket.on('new client', (data) => {
         setClientList([...(clientList || []), data])
       })
+
+      socket.off('client info update')
+      socket.on('client info update', (data: ClientInfoDto) => {
+        setClientList((prevClientList) =>
+          prevClientList?.map((client) => (client.userId === data.userId ? data : client)),
+        )
+      })
     } catch (err) {
       console.log(err)
     }
