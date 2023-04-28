@@ -108,6 +108,9 @@ const useChatInfo = (params: useChatInfoParams) => {
 
       socket.off('client info update')
       socket.on('client info update', (data: ClientInfoDto) => {
+        if (data.userId == localStorage.getItem('ID')) {
+          localStorage.setItem('name', data.nickname)
+        }
         setClientList((prevClientList) =>
           prevClientList?.map((client) => (client.userId === data.userId ? data : client)),
         )

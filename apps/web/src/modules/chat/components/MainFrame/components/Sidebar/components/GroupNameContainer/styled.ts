@@ -8,7 +8,6 @@ export const RootContainer = styled('div')`
   align-items: flex-start;
   background-color: #322036;
   width: 100%;
-  height: 85vh;
   overflow-y: auto;
   overflow-x: hidden;
 

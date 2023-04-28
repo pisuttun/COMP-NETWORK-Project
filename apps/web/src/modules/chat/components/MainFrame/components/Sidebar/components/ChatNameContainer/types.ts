@@ -5,6 +5,7 @@ export interface ChatNameContainerProps {
   chatChoice?: NameDisplay[]
   focus: string
   setFocus: Dispatch<SetStateAction<string>>
+  isSetting: boolean
 }
 export interface NameDisplay {
   userId: string
