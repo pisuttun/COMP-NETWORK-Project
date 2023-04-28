@@ -1,5 +1,5 @@
 import { useSocket } from 'common/context/socketContext'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ClientInfoDto, ClientStatus, CreateGroupDto, GroupInfoDto } from '@chatAIP/dtos'
 import { useChatInfoParams } from './types'
 
@@ -9,8 +9,16 @@ const useChatInfo = (params: useChatInfoParams) => {
   const [focusOnline, setFocusOnline] = useState<ClientStatus | undefined>(ClientStatus.OFFLINE)
   const { socket, loading } = useSocket()
   const [groupList, setGroupList] = useState<GroupInfoDto[]>()
-  const [joinedGroupList, setJoinedGroupList] = useState<GroupInfoDto[]>()
-  const [unjoinGroupList, setUnjoinGroupList] = useState<GroupInfoDto[]>()
+
+  const joinedGroupList = useMemo(
+    () => groupList?.filter((group) => group.isJoined === true),
+    [groupList],
+  )
+
+  const unjoinGroupList = useMemo(
+    () => groupList?.filter((group) => group.isJoined === false),
+    [groupList],
+  )
 
   const [clientList, setClientList] = useState<ClientInfoDto[]>()
   const [isDM, setIsDM] = useState(true)
@@ -133,11 +141,6 @@ const useChatInfo = (params: useChatInfoParams) => {
       }
     }
   }, [clientList, focus, groupList, isDM])
-
-  useEffect(() => {
-    setJoinedGroupList(groupList?.filter((group) => group.isJoined === true))
-    setUnjoinGroupList(groupList?.filter((group) => group.isJoined === false))
-  }, [groupList])
 
   return {
     joinedGroupList,

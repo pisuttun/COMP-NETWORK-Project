@@ -28,7 +28,7 @@ export default function ChatPage() {
   })
   const { messageList, text, setText, sendMessage, getMessage } = useMessageInfo({
     focus,
-    setFocus,
+    isDM,
   })
 
   return (

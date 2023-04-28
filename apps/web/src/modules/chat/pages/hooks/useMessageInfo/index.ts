@@ -9,7 +9,7 @@ import { apiClient } from 'common/utils/api'
 import emojiName from 'emoji-name-map'
 
 const useMessageInfo = (params: useMessageInfoParams) => {
-  const { focus } = params
+  const { focus, isDM } = params
   const { displaySnackbar } = useSnackbar()
 
   const { socket } = useSocket()
@@ -49,7 +49,7 @@ const useMessageInfo = (params: useMessageInfoParams) => {
     const body: SendMessageDto = {
       text: newText,
       senderId: myId!,
-      receiverId: focus,
+      ...(isDM ? { receiverId: focus } : { groupId: focus }),
     }
     socket.emit('send message', body)
     if (myId !== focus) {
@@ -62,7 +62,7 @@ const useMessageInfo = (params: useMessageInfoParams) => {
       }
       setMessageList((prev) => [newMessage, ...(prev || [])])
     }
-  }, [focus, myId, socket, text])
+  }, [focus, myId, socket, text, insertEmoji])
 
   const getMessage = useCallback(async () => {
     if (!isLoading.current && nextMessage.current != '-') {
@@ -75,8 +75,8 @@ const useMessageInfo = (params: useMessageInfoParams) => {
             },
             params: {
               latestMessageId: nextMessage.current,
-              sourceId: focus,
-              destinationId: myId,
+              sourceId: myId,
+              ...(isDM ? { destinationId: focus } : { groupId: focus }),
             },
           })
         ).data.data
@@ -94,7 +94,7 @@ const useMessageInfo = (params: useMessageInfoParams) => {
       }
       isLoading.current = false
     }
-  }, [focus, messageList, myId])
+  }, [focus, myId])
 
   useEffect(() => {
     socket.off('new message')
