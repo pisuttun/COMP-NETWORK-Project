@@ -11,6 +11,6 @@ export interface ClientInfoDto {
 
 export interface UpdateClientInfoDto {
   senderId?: string
-  status?: ClientStatus
+  isinvisible?: boolean
   nickname?: string
 }

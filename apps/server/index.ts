@@ -17,7 +17,7 @@ import {
   handleLogout,
 } from './controllers/auth'
 import { handleGetAllClient, handleUpdateClientInfo } from './controllers/profiles'
-import { protectedRoute } from './middleware/auth'
+import { protectedSocketRoute } from './middleware/auth'
 import { handleSendMessage } from './controllers/messages'
 import messageRoute from './routes/messages'
 import { CreateGroupDto, SendMessageDto, UserCredentialsDto, VerifyTokenDto } from '@chatAIP/dtos'
@@ -91,7 +91,7 @@ io.on('connection', (socket: Socket) => {
   })
   socket.on('logout', async () => {
     // logout is custom user client logout event
-    protectedRoute(io, socket)
+    protectedSocketRoute(io, socket)
       .then((result) => {
         //console.log('before logout result: ', result)
         handleLogout(io, socket, String(result._id))
@@ -103,7 +103,7 @@ io.on('connection', (socket: Socket) => {
 
   //profile routes
   socket.on('change client info', async (body: UpdateClientInfoDto) => {
-    protectedRoute(io, socket)
+    protectedSocketRoute(io, socket)
       .then(() => {
         handleUpdateClientInfo(io, socket, body)
       })
@@ -112,7 +112,7 @@ io.on('connection', (socket: Socket) => {
       })
   })
   socket.on('get all client', async () => {
-    protectedRoute(io, socket)
+    protectedSocketRoute(io, socket)
       .then(() => {
         handleGetAllClient(io, socket)
       })
@@ -123,7 +123,7 @@ io.on('connection', (socket: Socket) => {
 
   //message routes
   socket.on('send message', (body: SendMessageDto) => {
-    protectedRoute(io, socket)
+    protectedSocketRoute(io, socket)
       .then(() => {
         handleSendMessage(io, socket, body)
       })
@@ -134,7 +134,7 @@ io.on('connection', (socket: Socket) => {
 
   //group routes
   socket.on('create group', (body: CreateGroupDto) => {
-    protectedRoute(io, socket)
+    protectedSocketRoute(io, socket)
       .then(() => {
         handleCreateGroup(io, socket, body)
       })
@@ -143,7 +143,7 @@ io.on('connection', (socket: Socket) => {
       })
   })
   socket.on('get all group', () => {
-    protectedRoute(io, socket)
+    protectedSocketRoute(io, socket)
       .then(() => {
         handleGetAllGroup(io, socket)
       })
@@ -152,7 +152,7 @@ io.on('connection', (socket: Socket) => {
       })
   })
   socket.on('join group', (body: GroupClientIdDto) => {
-    protectedRoute(io, socket)
+    protectedSocketRoute(io, socket)
       .then(() => {
         handleJoinGroup(io, socket, body)
       })
@@ -161,7 +161,7 @@ io.on('connection', (socket: Socket) => {
       })
   })
   socket.on('leave group', (body: GroupClientIdDto) => {
-    protectedRoute(io, socket)
+    protectedSocketRoute(io, socket)
       .then(() => {
         handleLeaveGroup(io, socket, body)
       })

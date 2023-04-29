@@ -19,12 +19,12 @@ const addOnlineUsers = (newSocketId: string) => {
 }
 
 const yourId = (io: Server, payload: YourIdDto) => {
-  const { isSuccess, socketId, token, nickname, userId } = payload
+  const { isSuccess, socketId, token, nickname, userId, isInvisible } = payload
   //TODO : add expire time?
-  io.to(socketId).emit('your id', { isSuccess, socketId, token, nickname, userId })
+  io.to(socketId).emit('your id', { isSuccess, socketId, token, nickname, userId, isInvisible })
 
   addOnlineUsers(socketId)
-  return { isSuccess, socketId, token, nickname, userId }
+  return { isSuccess, socketId, token, nickname, userId, isInvisible }
 }
 
 const verifyStatus = (io: Server, socketId: string, verifyStatusDto: VerifyStatusDto) => {
@@ -60,6 +60,7 @@ export const handleRegister = async (io: Server, socket: Socket, body: UserCrede
       token,
       nickname: newClient.nickname,
       userId: String(newClient._id),
+      isInvisible: newClient.isInvisibility,
     })
   } catch (error) {
     console.log('error in register: ', error)
@@ -69,6 +70,7 @@ export const handleRegister = async (io: Server, socket: Socket, body: UserCrede
       token: '',
       nickname: '',
       userId: '',
+      isInvisible: false,
     })
   }
 }
@@ -85,6 +87,7 @@ export const handleLogin = async (io: Server, socket: Socket, body: UserCredenti
         token: '',
         nickname: '',
         userId: '',
+        isInvisible: false,
       })
     }
     // Check for user
@@ -96,6 +99,7 @@ export const handleLogin = async (io: Server, socket: Socket, body: UserCredenti
         token: '',
         nickname: '',
         userId: '',
+        isInvisible: false,
       })
     } else {
       // Check if password matches
@@ -107,6 +111,7 @@ export const handleLogin = async (io: Server, socket: Socket, body: UserCredenti
           token: '',
           nickname: '',
           userId: '',
+          isInvisible: false,
         })
       } else {
         const token = client.getSignedJwtToken()
@@ -115,8 +120,9 @@ export const handleLogin = async (io: Server, socket: Socket, body: UserCredenti
           { socketId: socket.id, status: ClientStatus.AVAILABLE },
           { new: true },
         )
+        if (!updatedClient) return ''
         //emit {client info update} to all online users, indicate the user is online (if not invisible)
-        if (updatedClient && !updatedClient.isInvisibility) {
+        if (!updatedClient.isInvisibility) {
           const clientInfo: ClientInfoDto = {
             userId: String(updatedClient._id),
             status: updatedClient.status,
@@ -124,13 +130,14 @@ export const handleLogin = async (io: Server, socket: Socket, body: UserCredenti
           }
           io.emit('client info update', clientInfo)
         }
-
+        console.log('Test before yourId')
         return yourId(io, {
           isSuccess: true,
           socketId,
           token,
-          nickname: client.nickname,
-          userId: String(client._id),
+          nickname: updatedClient.nickname,
+          userId: String(updatedClient._id),
+          isInvisible: updatedClient.isInvisibility,
         })
       }
     }
@@ -203,6 +210,7 @@ export const handleVerify = async (io: Server, socket: Socket, token: string) =>
       token,
       nickname: client.nickname,
       userId: String(client._id),
+      isInvisible: client.isInvisibility,
     })
 
     //emit {client info update} to all online users, indicate the user is online (if not invisible)

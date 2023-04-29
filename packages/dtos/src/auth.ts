@@ -4,6 +4,7 @@ export interface YourIdDto {
   token: string //jwt token
   nickname: string
   userId: string
+  isInvisible: boolean
 }
 
 export interface UserCredentialsDto {

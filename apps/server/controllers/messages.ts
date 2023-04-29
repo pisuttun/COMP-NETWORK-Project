@@ -1,6 +1,8 @@
+/* eslint-disable turbo/no-undeclared-env-vars */
 import { Server, Socket } from 'socket.io'
 import clientModel from '../database/model/client'
 import chatData from '../database/model/chatData'
+import groupModel from '../database/model/group'
 import { Request, Response } from 'express'
 import {
   SendMessageDto,
@@ -73,6 +75,9 @@ export const handleGetAllMessage = async (req: Request, res: Response) => {
     console.log('req : ', req.query)
     const reqParams: ReqGetMessageDto = req.query
     const { latestMessageId, destinationId, sourceId, groupId } = reqParams
+    const senderId = req.user!._id
+    console.log('test senderId :', senderId)
+
     const fixedNumberOfMessage = 10
 
     let chatDataQuery = {}
@@ -82,6 +87,13 @@ export const handleGetAllMessage = async (req: Request, res: Response) => {
 
     let chatDataList: any[] = []
     if (sourceId && destinationId) {
+      // Not owner
+      if (String(senderId) !== sourceId) {
+        res.status(401).json({
+          message: 'sourceId and senderId not match',
+        })
+        return
+      }
       chatDataList = await chatData
         .find({
           $or: [
@@ -104,6 +116,22 @@ export const handleGetAllMessage = async (req: Request, res: Response) => {
         })
         .limit(fixedNumberOfMessage + 1)
     } else if (groupId) {
+      const group = await groupModel.findById(groupId)
+      if (!group) {
+        res.status(404).json({
+          message: 'group not found',
+        })
+        return
+      }
+      // Not in group
+      console.log('test query group: ', group)
+
+      if (!group.clientId.includes(senderId)) {
+        res.status(401).json({
+          message: 'senderId not in group',
+        })
+        return
+      }
       chatDataList = await chatData
         .find({ ...chatDataQuery, groupId: groupId })
         .select('text senderId createdAt')
