@@ -4,7 +4,7 @@ import { useSocket } from 'common/context/socketContext'
 import { UpdateClientInfoDto } from '@chatAIP/dtos'
 
 const useProfileSetting = () => {
-  const [value, setValue] = useState('auto')
+  const [value, setValue] = useState('')
   const [newDisplay, setNewDisplay] = useState('')
   const [myId, setMyId] = useState('')
 
@@ -19,11 +19,14 @@ const useProfileSetting = () => {
   }, [myId, newDisplay, socket])
 
   useEffect(() => {
-    const body: UpdateClientInfoDto = {
-      senderId: myId,
-      isinvisible: value === 'auto' ? false : true,
+    if (value != '') {
+      localStorage.setItem('isInvisible', value === 'auto' ? 'false' : 'true')
+      const body: UpdateClientInfoDto = {
+        senderId: myId,
+        isInvisible: value === 'auto' ? false : true,
+      }
+      socket.emit('change client info', body)
     }
-    socket.emit('change client info', body)
   }, [value])
 
   useEffect(() => {

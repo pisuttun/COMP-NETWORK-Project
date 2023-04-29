@@ -22,11 +22,13 @@ export default function Sidebar(props: SidebarProps) {
     leaveGroup,
   } = props
   const [userName, setUserName] = useState('')
+  const [avai, setAvai] = useState(true)
   const [isSettingShow, setIsSettingShow] = useState(false)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       setUserName(localStorage.getItem('name')!)
+      setAvai(localStorage.getItem('isInvisible') === 'true' ? false : true)
     }
   }, [clientList])
 
@@ -58,7 +60,7 @@ export default function Sidebar(props: SidebarProps) {
         <UserContainer>
           <ChatNameDisplay
             isGroup={false}
-            status={ClientStatus.AVAILABLE}
+            status={avai ? ClientStatus.AVAILABLE : ClientStatus.OFFLINE}
             name={userName}
             focus={'false'}
             isChoice={true}
