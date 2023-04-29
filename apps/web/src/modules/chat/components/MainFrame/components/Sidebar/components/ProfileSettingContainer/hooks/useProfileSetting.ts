@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSocket } from 'common/context/socketContext'
 import { UpdateClientInfoDto } from '@chatAIP/dtos'
+import { useSnackbar } from 'common/context/SnackbarContext'
 
 const useProfileSetting = () => {
   const [value, setValue] = useState('')
@@ -9,13 +10,18 @@ const useProfileSetting = () => {
   const [myId, setMyId] = useState('')
 
   const { socket } = useSocket()
+  const { displaySnackbar } = useSnackbar()
 
   const changeDisplayName = useCallback(async () => {
-    const body: UpdateClientInfoDto = {
-      senderId: myId,
-      nickname: newDisplay,
+    if (newDisplay.length >= 15) {
+      displaySnackbar("Name can't be longer than 15 character", 'error')
+    } else {
+      const body: UpdateClientInfoDto = {
+        senderId: myId,
+        nickname: newDisplay,
+      }
+      socket.emit('change client info', body)
     }
-    socket.emit('change client info', body)
   }, [myId, newDisplay, socket])
 
   useEffect(() => {
