@@ -11,7 +11,7 @@ dotenv.config()
 declare global {
   namespace Express {
     interface Request {
-      user?: any // TODO: Update User with the appropriate type
+      user?: IClient | null // TODO: Update User with the appropriate type
     }
   }
 }

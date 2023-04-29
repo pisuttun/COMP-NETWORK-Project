@@ -75,7 +75,7 @@ export const handleGetAllMessage = async (req: Request, res: Response) => {
     console.log('req : ', req.query)
     const reqParams: ReqGetMessageDto = req.query
     const { latestMessageId, destinationId, sourceId, groupId } = reqParams
-    const senderId = req.user._id
+    const senderId = req.user!._id
     console.log('test senderId :', senderId)
 
     const fixedNumberOfMessage = 10
