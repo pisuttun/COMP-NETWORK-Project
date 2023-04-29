@@ -34,6 +34,7 @@ const useLoginForm = () => {
         localStorage.setItem('token', data.token)
         localStorage.setItem('ID', data.userId)
         localStorage.setItem('name', data.nickname)
+        localStorage.setItem('isInvisible', data.isInvisible.toString())
       })
     } catch (error) {
       console.log(error)
