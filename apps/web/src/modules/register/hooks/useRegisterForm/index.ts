@@ -2,6 +2,7 @@ import { useSocket } from 'common/context/socketContext'
 import router from 'next/router'
 import { useState } from 'react'
 import { UserCredentialsDto } from '@chatAIP/dtos'
+import { useSnackbar } from 'common/context/SnackbarContext'
 
 const useRegisterForm = () => {
   const [username, setUsername] = useState('')
@@ -9,6 +10,7 @@ const useRegisterForm = () => {
   const [usernameError, setUsernameError] = useState('')
   const [passwordError, setPasswordError] = useState('')
   const { socket } = useSocket()
+  const { displaySnackbar } = useSnackbar()
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -18,20 +20,24 @@ const useRegisterForm = () => {
     if (password.trim() === '') {
       setPasswordError('Password is required')
     }
-    try {
-      const body: UserCredentialsDto = {
-        username: username,
-        password: password,
+    if (username.length >= 15) {
+      displaySnackbar("Username can't be longer than 15 character", 'error')
+    } else {
+      try {
+        const body: UserCredentialsDto = {
+          username: username,
+          password: password,
+        }
+        socket.emit('register', body)
+        socket.on('your id', (data) => {
+          if (!data.isSuccess) {
+            setUsernameError('This username is already taken')
+          } else router.push('/')
+          localStorage.setItem('token', data.token)
+        })
+      } catch (error) {
+        console.log(error)
       }
-      socket.emit('register', body)
-      socket.on('your id', (data) => {
-        if (!data.isSuccess) {
-          setUsernameError('This username is already taken')
-        } else router.push('/')
-        localStorage.setItem('token', data.token)
-      })
-    } catch (error) {
-      console.log(error)
     }
   }
 

@@ -9,7 +9,7 @@ import { apiClient } from 'common/utils/api'
 import emojiName from 'emoji-name-map'
 
 const useMessageInfo = (params: useMessageInfoParams) => {
-  const { focus } = params
+  const { focus, isDM } = params
   const { displaySnackbar } = useSnackbar()
 
   const { socket } = useSocket()
@@ -21,10 +21,9 @@ const useMessageInfo = (params: useMessageInfoParams) => {
 
   const getGroupmessage = async (groupId: string) => {
     socket.on(groupId + ' message', (data) => {
-      setMessageList((prev) => ({
-        ...(prev || []),
-        ...data,
-      }))
+      if (groupId === focus) {
+        setMessageList((prev) => [data, ...(prev || [])])
+      }
     })
   }
 
@@ -49,7 +48,7 @@ const useMessageInfo = (params: useMessageInfoParams) => {
     const body: SendMessageDto = {
       text: newText,
       senderId: myId!,
-      receiverId: focus,
+      ...(isDM ? { receiverId: focus } : { groupId: focus }),
     }
     socket.emit('send message', body)
     if (myId !== focus) {
@@ -60,12 +59,14 @@ const useMessageInfo = (params: useMessageInfoParams) => {
         senderNickname: localStorage.getItem('name')!,
         createdAt: new Date(),
       }
-      setMessageList((prev) => [newMessage, ...(prev || [])])
+      if (isDM) {
+        setMessageList((prev) => [newMessage, ...(prev || [])])
+      }
     }
-  }, [focus, myId, socket, text])
+  }, [focus, myId, socket, text, insertEmoji])
 
   const getMessage = useCallback(async () => {
-    if (!isLoading.current && nextMessage.current != '-') {
+    if (!isLoading.current && nextMessage.current != '-' && focus != '' && myId != '') {
       isLoading.current = true
       try {
         const res = (
@@ -75,8 +76,8 @@ const useMessageInfo = (params: useMessageInfoParams) => {
             },
             params: {
               latestMessageId: nextMessage.current,
-              sourceId: focus,
-              destinationId: myId,
+              sourceId: myId,
+              ...(isDM ? { destinationId: focus } : { groupId: focus }),
             },
           })
         ).data.data
@@ -94,18 +95,20 @@ const useMessageInfo = (params: useMessageInfoParams) => {
       }
       isLoading.current = false
     }
-  }, [focus, messageList, myId])
+  }, [focus, myId])
 
   useEffect(() => {
-    socket.off('new message')
-    socket.on('new message', (data: NewMessageDto) => {
-      displaySnackbar(`New message from ${data.senderNickname}`, 'info')
-      console.log('Add message condition senderId:', data.senderId)
-      console.log('Add message condition focus:', focus)
-      if (data.senderId === focus) {
-        setMessageList((prev) => [data, ...(prev || [])])
-      }
-    })
+    if (isDM) {
+      socket.off('new message')
+      socket.on('new message', (data: NewMessageDto) => {
+        displaySnackbar(`New message from ${data.senderNickname}`, 'info')
+        if (data.senderId === focus) {
+          setMessageList((prev) => [data, ...(prev || [])])
+        }
+      })
+    } else {
+      getGroupmessage(focus)
+    }
   }, [focus])
 
   useEffect(() => {

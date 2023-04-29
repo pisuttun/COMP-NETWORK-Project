@@ -3,6 +3,7 @@ import { ChatNameDisplayProps } from './types'
 import { Typography } from '@mui/material'
 import { ClientStatus } from '@chatAIP/dtos'
 import { Add, Remove } from '@mui/icons-material/'
+import { useSocket } from 'common/context/socketContext'
 
 export default function ChatNameDisplay(props: ChatNameDisplayProps) {
   const { isGroup, name, status, focus, setFocus, isChoice, id, isJoined, joinGroup, leaveGroup } =
@@ -13,6 +14,8 @@ export default function ChatNameDisplay(props: ChatNameDisplayProps) {
   const leaveGroupHandle = () => {
     leaveGroup!(id!)
   }
+  const { socket } = useSocket()
+
   return (
     <div
       style={{
@@ -25,16 +28,23 @@ export default function ChatNameDisplay(props: ChatNameDisplayProps) {
         width: '100%',
         paddingLeft: isChoice ? '' : '1.5rem',
         cursor: isChoice ? '' : 'pointer',
+        overflow: 'hidden',
       }}
       onClick={() => {
         if (focus && !isChoice) {
+          socket.off(id! + ' message')
           setFocus!(id!)
-          console.log(id, focus)
         }
       }}
     >
       {!isGroup && (
-        <Circle sx={{ fill: status === ClientStatus.AVAILABLE ? '#6DD58C' : '#606060' }} />
+        <Circle
+          sx={{
+            fill: status === ClientStatus.AVAILABLE ? '#6DD58C' : '#606060',
+            width: '20px',
+            height: '20px',
+          }}
+        />
       )}
       <Typography sx={{ color: '#EFE0FF', flexGrow: '1' }}>{name}</Typography>
       {isGroup &&

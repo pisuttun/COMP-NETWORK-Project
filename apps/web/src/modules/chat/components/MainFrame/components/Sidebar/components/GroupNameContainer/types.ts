@@ -9,6 +9,7 @@ export interface GroupNameContainerProps {
   createNewGroup: (name: string) => Promise<void>
   joinGroup: (groupId: string) => Promise<void>
   leaveGroup: (groupId: string) => Promise<void>
+  isSetting: boolean
 }
 export interface NameDisplay {
   userId: string

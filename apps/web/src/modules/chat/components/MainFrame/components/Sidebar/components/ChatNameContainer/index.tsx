@@ -3,9 +3,9 @@ import { ChatNameContainerProps } from './types'
 import { RootContainer } from './styled'
 
 export default function ChatNameContainer(props: ChatNameContainerProps) {
-  const { chatChoice, focus, setFocus } = props
+  const { chatChoice, focus, setFocus, isSetting } = props
   return (
-    <RootContainer>
+    <RootContainer sx={{ height: isSetting ? 'calc(85vh - 240px)' : '85vh' }}>
       {chatChoice?.map((item) => {
         return (
           <ChatNameDisplay

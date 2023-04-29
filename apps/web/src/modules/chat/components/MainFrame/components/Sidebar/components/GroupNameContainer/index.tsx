@@ -15,10 +15,11 @@ export default function ChatNameContainer(props: GroupNameContainerProps) {
     createNewGroup,
     joinGroup,
     leaveGroup,
+    isSetting,
   } = props
   const { newGroupName, setNewGroupName } = useNewGroupData()
   return (
-    <RootContainer>
+    <RootContainer sx={{ height: isSetting ? 'calc(85vh - 240px)' : '85vh' }}>
       <Typography
         variant="subtitle1"
         style={{ color: '#D0B1F8', paddingLeft: '1.5rem', paddingTop: '1rem' }}
@@ -34,7 +35,6 @@ export default function ChatNameContainer(props: GroupNameContainerProps) {
             <Add
               onClick={() => {
                 createNewGroup(newGroupName)
-                console.log(newGroupName)
               }}
               style={{ cursor: 'pointer' }}
             />

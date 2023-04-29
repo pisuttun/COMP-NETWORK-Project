@@ -1,5 +1,5 @@
 import { useSocket } from 'common/context/socketContext'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ClientInfoDto, ClientStatus, CreateGroupDto, GroupInfoDto } from '@chatAIP/dtos'
 import { useChatInfoParams } from './types'
 
@@ -9,8 +9,16 @@ const useChatInfo = (params: useChatInfoParams) => {
   const [focusOnline, setFocusOnline] = useState<ClientStatus | undefined>(ClientStatus.OFFLINE)
   const { socket, loading } = useSocket()
   const [groupList, setGroupList] = useState<GroupInfoDto[]>()
-  const [joinedGroupList, setJoinedGroupList] = useState<GroupInfoDto[]>()
-  const [unjoinGroupList, setUnjoinGroupList] = useState<GroupInfoDto[]>()
+
+  const joinedGroupList = useMemo(
+    () => groupList?.filter((group) => group.isJoined === true),
+    [groupList],
+  )
+
+  const unjoinGroupList = useMemo(
+    () => groupList?.filter((group) => group.isJoined === false),
+    [groupList],
+  )
 
   const [clientList, setClientList] = useState<ClientInfoDto[]>()
   const [isDM, setIsDM] = useState(true)
@@ -20,8 +28,14 @@ const useChatInfo = (params: useChatInfoParams) => {
       socket.off('all group')
       socket.on('all group', (data: GroupInfoDto[]) => {
         setGroupList(data)
-        if (data.length !== 0) {
-          setFocus(data[0].groupId)
+        const joinedGroups = data.filter((group) => group.isJoined === true)
+
+        if (joinedGroups.length !== 0) {
+          // Set focus to the first group in the joined group list
+          setFocus(joinedGroups[0].groupId)
+        } else {
+          // Set focus to "NF" if there are no joined groups
+          setFocus('NF')
         }
       })
       socket.off('new group')
@@ -61,6 +75,19 @@ const useChatInfo = (params: useChatInfoParams) => {
           group.groupId === groupId ? { ...group, isJoined: false } : group,
         ),
       )
+      if (groupId === focus) {
+        const joinedGroups = groupList!.filter(
+          (group) => group.isJoined === true && group.groupId !== groupId,
+        )
+
+        if (joinedGroups.length !== 0) {
+          // Set focus to the first group in the joined group list
+          setFocus(joinedGroups[0].groupId)
+        } else {
+          // Set focus to "NF" if there are no joined groups
+          setFocus('NF')
+        }
+      }
     } catch (err) {
       console.log(err)
     }
@@ -93,10 +120,24 @@ const useChatInfo = (params: useChatInfoParams) => {
           setFocus(data[0].userId)
         }
       })
+      socket.off('new client')
+      socket.on('new client', (data) => {
+        setClientList([...(clientList || []), data])
+      })
+
+      socket.off('client info update')
+      socket.on('client info update', (data: ClientInfoDto) => {
+        if (data.userId == localStorage.getItem('ID')) {
+          localStorage.setItem('name', data.nickname)
+        }
+        setClientList((prevClientList) =>
+          prevClientList?.map((client) => (client.userId === data.userId ? data : client)),
+        )
+      })
     } catch (err) {
       console.log(err)
     }
-  }, [setFocus, socket])
+  }, [clientList, setFocus, socket])
 
   useEffect(() => {
     if (!loading) {
@@ -133,11 +174,6 @@ const useChatInfo = (params: useChatInfoParams) => {
       }
     }
   }, [clientList, focus, groupList, isDM])
-
-  useEffect(() => {
-    setJoinedGroupList(groupList?.filter((group) => group.isJoined === true))
-    setUnjoinGroupList(groupList?.filter((group) => group.isJoined === false))
-  }, [groupList])
 
   return {
     joinedGroupList,
