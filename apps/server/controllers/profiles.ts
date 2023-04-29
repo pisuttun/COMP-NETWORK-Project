@@ -25,7 +25,7 @@ export const handleUpdateClientInfo = async (
   body: UpdateClientInfoDto,
 ) => {
   console.log('update client info')
-  let { senderId, status, nickname } = body
+  let { senderId, isinvisible, nickname } = body
   try {
     const userId = String(await convertSocketIdToUserId(socket.id))
     if (!senderId) {
@@ -38,7 +38,7 @@ export const handleUpdateClientInfo = async (
     const client = await clientModel.findByIdAndUpdate(
       senderId,
       {
-        isInvisibility: status === ClientStatus.OFFLINE ? true : false,
+        isInvisibility: isinvisible,
         nickname,
       },
       { new: true },
