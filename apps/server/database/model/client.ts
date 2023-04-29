@@ -11,6 +11,7 @@ const clientSchema = new Schema<IClient>(
       type: String,
       required: true,
       unique: true,
+      maxlength: 15,
     },
     password: {
       type: String,
@@ -19,6 +20,7 @@ const clientSchema = new Schema<IClient>(
     nickname: {
       type: String,
       required: true,
+      maxlength: 15,
     },
     socketId: {
       type: String,
