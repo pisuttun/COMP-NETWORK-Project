@@ -21,7 +21,7 @@ const useMessageInfo = (params: useMessageInfoParams) => {
 
   const getGroupmessage = async (groupId: string) => {
     socket.on(groupId + ' message', (data) => {
-      if (data.senderId === focus) {
+      if (groupId === focus) {
         setMessageList((prev) => [data, ...(prev || [])])
       }
     })
@@ -107,6 +107,7 @@ const useMessageInfo = (params: useMessageInfoParams) => {
         }
       })
     } else {
+      console.log('Group ID : ', focus)
       getGroupmessage(focus)
     }
   }, [focus])
