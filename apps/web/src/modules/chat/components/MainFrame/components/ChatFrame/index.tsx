@@ -41,7 +41,6 @@ export default function ChatFrame(props: ChatFrameProps) {
           onInput={() => {}}
           onChange={(e) => {
             if (textFieldRef.current) {
-              console.log('Text Call')
               isOverflow(e.target.value)
             }
           }}

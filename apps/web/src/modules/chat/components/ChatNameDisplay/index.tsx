@@ -34,7 +34,6 @@ export default function ChatNameDisplay(props: ChatNameDisplayProps) {
         if (focus && !isChoice) {
           socket.off(id! + ' message')
           setFocus!(id!)
-          console.log(id, focus)
         }
       }}
     >

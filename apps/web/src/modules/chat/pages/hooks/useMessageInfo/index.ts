@@ -107,7 +107,6 @@ const useMessageInfo = (params: useMessageInfoParams) => {
         }
       })
     } else {
-      console.log('Group ID : ', focus)
       getGroupmessage(focus)
     }
   }, [focus])
