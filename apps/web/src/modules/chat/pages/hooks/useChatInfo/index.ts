@@ -28,8 +28,14 @@ const useChatInfo = (params: useChatInfoParams) => {
       socket.off('all group')
       socket.on('all group', (data: GroupInfoDto[]) => {
         setGroupList(data)
-        if (data.length !== 0) {
-          setFocus(data[0].groupId)
+        const joinedGroups = data.filter((group) => group.isJoined === true)
+
+        if (joinedGroups.length !== 0) {
+          // Set focus to the first group in the joined group list
+          setFocus(joinedGroups[0].groupId)
+        } else {
+          // Set focus to "NF" if there are no joined groups
+          setFocus('NF')
         }
       })
       socket.off('new group')
@@ -69,6 +75,19 @@ const useChatInfo = (params: useChatInfoParams) => {
           group.groupId === groupId ? { ...group, isJoined: false } : group,
         ),
       )
+      if (groupId === focus) {
+        const joinedGroups = groupList!.filter(
+          (group) => group.isJoined === true && group.groupId !== groupId,
+        )
+
+        if (joinedGroups.length !== 0) {
+          // Set focus to the first group in the joined group list
+          setFocus(joinedGroups[0].groupId)
+        } else {
+          // Set focus to "NF" if there are no joined groups
+          setFocus('NF')
+        }
+      }
     } catch (err) {
       console.log(err)
     }

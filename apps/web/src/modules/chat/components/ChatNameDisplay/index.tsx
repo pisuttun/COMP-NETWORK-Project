@@ -39,7 +39,13 @@ export default function ChatNameDisplay(props: ChatNameDisplayProps) {
       }}
     >
       {!isGroup && (
-        <Circle sx={{ fill: status === ClientStatus.AVAILABLE ? '#6DD58C' : '#606060' }} />
+        <Circle
+          sx={{
+            fill: status === ClientStatus.AVAILABLE ? '#6DD58C' : '#606060',
+            width: '20px',
+            height: '20px',
+          }}
+        />
       )}
       <Typography sx={{ color: '#EFE0FF', flexGrow: '1' }}>{name}</Typography>
       {isGroup &&
