@@ -66,7 +66,7 @@ const useMessageInfo = (params: useMessageInfoParams) => {
   }, [focus, myId, socket, text, insertEmoji])
 
   const getMessage = useCallback(async () => {
-    if (!isLoading.current && nextMessage.current != '-') {
+    if (!isLoading.current && nextMessage.current != '-' && focus != '' && myId != '') {
       isLoading.current = true
       try {
         const res = (
