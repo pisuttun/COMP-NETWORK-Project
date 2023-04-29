@@ -1,20 +1,12 @@
 import { Typography } from '@mui/material'
 import { RootContainer, SubContainer, StyledReactMarkdown } from './styled'
 import { ChatLineProps } from './types'
+import useFormatDate from './hooks/useFormatDate'
 
 export default function ChatLine(props: ChatLineProps) {
   const { sender, time, message } = props
+  const { formatDate } = useFormatDate()
 
-  const formatDate = (date: Date) => {
-    const options: Intl.DateTimeFormatOptions = {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    }
-    return new Intl.DateTimeFormat('en-GB', options).format(date)
-  }
   return (
     <RootContainer>
       <SubContainer>
