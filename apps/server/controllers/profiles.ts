@@ -35,6 +35,9 @@ export const handleUpdateClientInfo = async (
         throw new Error('senderId is not match')
       }
     }
+    if (nickname!.length > 15) {
+      throw new Error('nickname too long')
+    }
     const client = await clientModel.findByIdAndUpdate(
       senderId,
       {
