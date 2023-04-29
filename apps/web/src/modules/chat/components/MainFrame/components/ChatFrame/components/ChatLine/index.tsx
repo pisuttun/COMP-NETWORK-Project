@@ -11,7 +11,7 @@ export default function ChatLine(props: ChatLineProps) {
           {sender}
         </Typography>
         <Typography variant="caption" sx={{ color: '#D0B1F8', paddingLeft: '6px' }}>
-          {new Date(time).toLocaleTimeString()}
+          {new Date(time).toLocaleString()}
         </Typography>
       </SubContainer>
       <Typography
