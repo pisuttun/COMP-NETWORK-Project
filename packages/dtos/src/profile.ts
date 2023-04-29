@@ -11,6 +11,6 @@ export interface ClientInfoDto {
 
 export interface UpdateClientInfoDto {
   senderId?: string
-  isinvisible?: boolean
+  isInvisible?: boolean
   nickname?: string
 }

@@ -25,7 +25,7 @@ export const handleUpdateClientInfo = async (
   body: UpdateClientInfoDto,
 ) => {
   console.log('update client info')
-  let { senderId, isinvisible, nickname } = body
+  let { senderId, isInvisible, nickname } = body
   try {
     const userId = String(await convertSocketIdToUserId(socket.id))
     if (!senderId) {
@@ -35,13 +35,13 @@ export const handleUpdateClientInfo = async (
         throw new Error('senderId is not match')
       }
     }
-    if (nickname!.length > 15) {
+    if (nickname && nickname.length > 15) {
       throw new Error('nickname too long')
     }
     const client = await clientModel.findByIdAndUpdate(
       senderId,
       {
-        isInvisibility: isinvisible,
+        isInvisibility: isInvisible,
         nickname,
       },
       { new: true },
