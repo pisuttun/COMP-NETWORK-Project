@@ -122,7 +122,7 @@ const useChatInfo = (params: useChatInfoParams) => {
       })
       socket.off('new client')
       socket.on('new client', (data) => {
-        setClientList([...(clientList || []), data])
+        setClientList((prev) => [...(prev || []), data])
       })
 
       socket.off('client info update')
