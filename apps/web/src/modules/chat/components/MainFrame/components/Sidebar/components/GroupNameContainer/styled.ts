@@ -1,4 +1,4 @@
-import { styled } from '@mui/material'
+import { TextField, styled } from '@mui/material'
 import { typography } from '@mui/system'
 
 export const RootContainer = styled('div')`
@@ -27,5 +27,14 @@ export const RootContainer = styled('div')`
 
   &::-webkit-scrollbar-thumb:hover {
     background-color: #d0b1f8; // Adjust thumb color on hover as desired
+  }
+`
+export const NewTextField = styled(TextField)`
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px ${({ theme }) => theme.palette.primary.light} inset !important;
+    border-radius: 12px;
   }
 `
