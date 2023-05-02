@@ -12,7 +12,7 @@ export const handleCreateGroup = async (io: Server, socket: Socket, body: Create
     const userId = String(await convertSocketIdToUserId(socket.id))
     clientId = clientId ? clientId : userId
     if (clientId !== userId) throw new Error('clientId is not match with userId')
-
+    if (groupName.length > 15) throw new Error('groupName too long')
     const socketId = socket.id
     const group = await groupModel.create({
       groupName,

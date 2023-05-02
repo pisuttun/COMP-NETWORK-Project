@@ -48,6 +48,8 @@ export const handleSendMessage = async (io: Server, socket: Socket, body: SendMe
     }
     // send to receiver
     if (receiverId) {
+      if (receiverId === senderId)
+        throw new Error('senderId and receiverId is the same, message send to self but not notifed')
       console.log('receive: ', body)
       const socketIdObject = (await clientModel.findById(receiverId).select('socketId')) || {
         socketId: '',
