@@ -50,7 +50,7 @@ const useChatInfo = (params: useChatInfoParams) => {
     } catch (err) {
       console.log(err)
     }
-  }, [groupList, setFocus, socket])
+  }, [setFocus, socket])
 
   const createNewGroup = useCallback(
     async (name: string) => {
