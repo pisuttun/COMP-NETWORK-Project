@@ -113,6 +113,7 @@ const useChatInfo = (params: useChatInfoParams) => {
           group.groupId === groupId ? { ...group, isJoined: true } : group,
         ),
       )
+      setFocus(groupId)
     } catch (err) {
       console.log(err)
     }
