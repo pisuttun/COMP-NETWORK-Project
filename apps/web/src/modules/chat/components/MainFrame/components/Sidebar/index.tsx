@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { RootContainer, UserContainer, ChatChoiceContainer, IconContainer } from './styled'
-import { LogoutOutlined, KeyboardArrowUpOutlined } from '@mui/icons-material'
+import {
+  LogoutOutlined,
+  KeyboardArrowUpOutlined,
+  KeyboardArrowDownOutlined,
+} from '@mui/icons-material'
 import ChatNameDisplay from 'modules/chat/components/ChatNameDisplay'
 import ChatNameContainer from './components/ChatNameContainer'
 import { SidebarProps } from './types'
@@ -67,12 +71,21 @@ export default function Sidebar(props: SidebarProps) {
           />
           <IconContainer>
             <LogoutOutlined sx={{ fill: 'white', cursor: 'pointer' }} onClick={logout} />
-            <KeyboardArrowUpOutlined
-              sx={{ fill: 'white', cursor: 'pointer' }}
-              onClick={() => {
-                setIsSettingShow((prev) => !prev)
-              }}
-            />
+            {!isSettingShow ? (
+              <KeyboardArrowUpOutlined
+                sx={{ fill: 'white', cursor: 'pointer' }}
+                onClick={() => {
+                  setIsSettingShow((prev) => !prev)
+                }}
+              />
+            ) : (
+              <KeyboardArrowDownOutlined
+                sx={{ fill: 'white', cursor: 'pointer' }}
+                onClick={() => {
+                  setIsSettingShow((prev) => !prev)
+                }}
+              />
+            )}
           </IconContainer>
         </UserContainer>
       </div>
