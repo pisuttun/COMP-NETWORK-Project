@@ -42,8 +42,10 @@ const useChatInfo = (params: useChatInfoParams) => {
       })
       socket.off('new group')
       socket.on('new group', (data) => {
-        const updatedGroupList = groupList?.filter((group) => group.groupId !== data.groupId)
-        setGroupList([...(updatedGroupList || []), data])
+        setGroupList((prev) => {
+          const updatedGroupList = prev?.filter((group) => group.groupId !== data.groupId)
+          return [...(updatedGroupList || []), data]
+        })
       })
     } catch (err) {
       console.log(err)
