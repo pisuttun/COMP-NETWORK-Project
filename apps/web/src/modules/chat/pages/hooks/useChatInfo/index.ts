@@ -41,11 +41,14 @@ const useChatInfo = (params: useChatInfoParams) => {
         }
       })
       socket.off('new group')
-      socket.on('new group', (data) => {
+      socket.on('new group', (data: GroupInfoDto) => {
         setGroupList((prev) => {
           const updatedGroupList = prev?.filter((group) => group.groupId !== data.groupId)
           return [...(updatedGroupList || []), data]
         })
+        if (data.isJoined) {
+          setFocus(data.groupId)
+        }
       })
     } catch (err) {
       console.log(err)
