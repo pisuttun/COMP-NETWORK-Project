@@ -81,7 +81,7 @@ const useMessageInfo = (params: useMessageInfoParams) => {
             },
           })
         ).data.data
-        if (res.nextMessageId === '' && (!res.messages || res.messages.length !== 0)) {
+        if (res.nextMessageId === '') {
           nextMessage.current = '-'
         } else {
           nextMessage.current = res.nextMessageId
