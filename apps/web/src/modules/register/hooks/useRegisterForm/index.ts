@@ -20,7 +20,7 @@ const useRegisterForm = () => {
     if (password.trim() === '') {
       setPasswordError('Password is required')
     }
-    if (username.length >= 15) {
+    if (username.length > 15) {
       displaySnackbar("Username can't be longer than 15 character", 'error')
     } else {
       try {
