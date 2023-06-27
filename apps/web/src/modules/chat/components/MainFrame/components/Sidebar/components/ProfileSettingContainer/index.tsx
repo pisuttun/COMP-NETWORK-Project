@@ -1,5 +1,5 @@
 import React from 'react'
-import { RootContainer } from './styled'
+import { NewTextField, RootContainer } from './styled'
 import {
   Typography,
   Radio,
@@ -42,7 +42,7 @@ const ProfileSettingContainer = () => {
         </RadioGroup>
       </FormControl>
       <Typography sx={{ color: '#EFE0FF', marginTop: '15px' }}>Change display name</Typography>
-      <TextField
+      <NewTextField
         label="New name"
         value={newDisplay}
         InputProps={{

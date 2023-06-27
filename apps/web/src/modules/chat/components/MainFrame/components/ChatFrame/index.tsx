@@ -27,7 +27,7 @@ export default function ChatFrame(props: ChatFrameProps) {
               style={{ alignSelf: 'center' }}
             />
             <Typography sx={{ color: '#EFE0FF', alignSelf: 'center' }}>
-              {"you havn't join any group yet"}
+              {'you have not join any group yet'}
             </Typography>
           </>
         )}

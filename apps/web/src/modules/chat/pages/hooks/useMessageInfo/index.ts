@@ -51,17 +51,15 @@ const useMessageInfo = (params: useMessageInfoParams) => {
       ...(isDM ? { receiverId: focus } : { groupId: focus }),
     }
     socket.emit('send message', body)
-    if (myId !== focus) {
-      const newMessage: NewMessageDto = {
-        messageId: focus + messageList.length,
-        text: newText,
-        senderId: myId!,
-        senderNickname: localStorage.getItem('name')!,
-        createdAt: new Date(),
-      }
-      if (isDM) {
-        setMessageList((prev) => [newMessage, ...(prev || [])])
-      }
+    const newMessage: NewMessageDto = {
+      messageId: focus + messageList.length,
+      text: newText,
+      senderId: myId!,
+      senderNickname: localStorage.getItem('name')!,
+      createdAt: new Date(),
+    }
+    if (isDM) {
+      setMessageList((prev) => [newMessage, ...(prev || [])])
     }
   }, [focus, myId, socket, text, insertEmoji])
 
@@ -81,7 +79,7 @@ const useMessageInfo = (params: useMessageInfoParams) => {
             },
           })
         ).data.data
-        if (res.nextMessageId === '' && (!res.messages || res.messages.length !== 0)) {
+        if (res.nextMessageId === '') {
           nextMessage.current = '-'
         } else {
           nextMessage.current = res.nextMessageId

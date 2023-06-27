@@ -1,6 +1,6 @@
 import ChatNameDisplay from 'modules/chat/components/ChatNameDisplay'
 import { GroupNameContainerProps } from './types'
-import { RootContainer } from './styled'
+import { RootContainer, NewTextField } from './styled'
 import { TextField, Typography } from '@mui/material'
 import theme from 'common/config/theme'
 import useNewGroupData from './hooks/useNewGroupData'
@@ -26,7 +26,7 @@ export default function ChatNameContainer(props: GroupNameContainerProps) {
       >
         create new group
       </Typography>
-      <TextField
+      <NewTextField
         label="Group name"
         value={newGroupName}
         InputProps={{

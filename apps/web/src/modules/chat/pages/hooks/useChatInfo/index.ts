@@ -2,6 +2,7 @@ import { useSocket } from 'common/context/socketContext'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ClientInfoDto, ClientStatus, CreateGroupDto, GroupInfoDto } from '@chatAIP/dtos'
 import { useChatInfoParams } from './types'
+import { useSnackbar } from 'common/context/SnackbarContext'
 
 const useChatInfo = (params: useChatInfoParams) => {
   const { focus, setFocus } = params
@@ -9,6 +10,7 @@ const useChatInfo = (params: useChatInfoParams) => {
   const [focusOnline, setFocusOnline] = useState<ClientStatus | undefined>(ClientStatus.OFFLINE)
   const { socket, loading } = useSocket()
   const [groupList, setGroupList] = useState<GroupInfoDto[]>()
+  const { displaySnackbar } = useSnackbar()
 
   const joinedGroupList = useMemo(
     () => groupList?.filter((group) => group.isJoined === true),
@@ -39,28 +41,37 @@ const useChatInfo = (params: useChatInfoParams) => {
         }
       })
       socket.off('new group')
-      socket.on('new group', (data) => {
-        const updatedGroupList = groupList?.filter((group) => group.groupId !== data.groupId)
-        setGroupList([...(updatedGroupList || []), data])
+      socket.on('new group', (data: GroupInfoDto) => {
+        setGroupList((prev) => {
+          const updatedGroupList = prev?.filter((group) => group.groupId !== data.groupId)
+          return [...(updatedGroupList || []), data]
+        })
+        if (data.isJoined) {
+          setFocus(data.groupId)
+        }
       })
     } catch (err) {
       console.log(err)
     }
-  }, [groupList, setFocus, socket])
+  }, [setFocus, socket])
 
   const createNewGroup = useCallback(
     async (name: string) => {
       try {
-        const body: CreateGroupDto = {
-          clientId: localStorage.getItem('ID')!,
-          groupName: name,
+        if (name.length > 15) {
+          displaySnackbar("Groupname can't be longer than 15 character", 'error')
+        } else {
+          const body: CreateGroupDto = {
+            clientId: localStorage.getItem('ID')!,
+            groupName: name,
+          }
+          socket.emit('create group', body)
         }
-        socket.emit('create group', body)
       } catch (err) {
         console.log(err)
       }
     },
-    [socket],
+    [displaySnackbar, socket],
   )
 
   const leaveGroup = async (groupId: string) => {
@@ -105,6 +116,7 @@ const useChatInfo = (params: useChatInfoParams) => {
           group.groupId === groupId ? { ...group, isJoined: true } : group,
         ),
       )
+      setFocus(groupId)
     } catch (err) {
       console.log(err)
     }
